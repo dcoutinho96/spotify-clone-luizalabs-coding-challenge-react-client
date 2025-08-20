@@ -7,7 +7,7 @@ import localforage from "localforage";
 
 import App from "./App";
 
-import "./styles/index.css"
+import "./styles/index.pcss"
 
 const queryClient = new QueryClient({
   defaultOptions: {
