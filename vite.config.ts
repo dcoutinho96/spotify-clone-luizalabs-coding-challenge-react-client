@@ -13,5 +13,9 @@ export default defineConfig({
       "dist",
       "e2e/**", 
     ],
+    coverage: {
+      reporter: ["text", "lcov"],   
+      reportsDirectory: "coverage",
+    },
   },
 });
