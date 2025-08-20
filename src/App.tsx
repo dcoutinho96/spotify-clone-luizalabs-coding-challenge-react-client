@@ -18,8 +18,8 @@ export default function App() {
   if (error) return <p>Oops: {(error as Error).message}</p>;
 
   return (
-    <main style={{ padding: 24 }}>
-      <p><strong>Message:</strong> {data?.hello}</p>
+    <main className='bg-brand' style={{ padding: 24 }}>
+      <p className='p-10'><strong>Message:</strong> {data?.hello}</p>
     </main>
   );
 }
