@@ -29,17 +29,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Run unit tests
       - name: Run Unit Tests
-        run: npm run test -- --run
+        run: npm run test:unit
         env:
           VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL: ${{ vars.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL }}
           NODE_ENV: test
           CI: true
 
-      # Run E2E tests with Playwright (against local dev server)
       - name: Run E2E Tests
-        run: npx start-server-and-test dev http://localhost:5173 test:e2e
+        run: npm run test:e2e:ci
         env:
           VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL: ${{ vars.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL }}
           NODE_ENV: test

@@ -11,11 +11,11 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen:watch": "graphql-codegen --config codegen.ts --watch",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings=0",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
+    "test": "vitest",
+    "test:unit": "vitest run",
     "test:e2e": "playwright test",
-    "test:e2e:dev": "start-server-and-test dev http://localhost:5173 test:e2e"
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:ci": "start-server-and-test dev http://localhost:5173 test:e2e"
   },
   "dependencies": {
     "@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema": "^0.2.0",
