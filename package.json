@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema": "^0.2.0",
-    "@tailwindcss/vite": "^4.1.12",
     "@tanstack/query-async-storage-persister": "^5.85.5",
     "@tanstack/react-query": "^5.85.5",
     "@tanstack/react-query-persist-client": "^5.85.5",
@@ -37,6 +36,7 @@
     "@graphql-codegen/typescript-operations": "^4.6.1",
     "@graphql-codegen/typescript-react-query": "^6.1.1",
     "@playwright/test": "^1.54.2",
+    "@tailwindcss/postcss": "^4.1.12",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -52,6 +52,7 @@
     "globals": "^16.3.0",
     "jsdom": "^26.1.0",
     "msw": "^2.10.5",
+    "postcss": "^8.5.6",
     "start-server-and-test": "^2.0.13",
     "stylelint": "^16.23.1",
     "stylelint-config-standard": "^39.0.0",
