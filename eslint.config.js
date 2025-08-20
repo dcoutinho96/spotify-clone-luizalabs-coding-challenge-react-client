@@ -7,13 +7,12 @@ import tseslint from 'typescript-eslint'
 import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
-  // 🔕 Ignore build output and generated code
   globalIgnores([
     'dist',
     'src/gql/generated.ts',
+    'coverage'
   ]),
 
-  // ✅ App/React source (browser)
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -31,12 +30,10 @@ export default tseslint.config([
       },
     },
     rules: {
-      // keep builds strict for your own code
       '@typescript-eslint/no-explicit-any': 'error',
     },
   },
 
-  // 🛠️ Tooling/Node files (config, scripts, codegen, vite)
   {
     files: [
       'eslint.config.{js,cjs,mjs,ts}',

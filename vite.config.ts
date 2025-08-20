@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         includeAssets: [
-          "assets/favicon.ico",     
-          "apple-touch-icon.png"     
+          "assets/favicon.ico",
+          "apple-touch-icon.png"
         ],
         manifest: {
           id: "/",
@@ -84,7 +84,22 @@ export default defineConfig(({ mode }) => {
         provider: "v8",
         reporter: ["text", "lcov"],
         reportsDirectory: "coverage",
-        thresholds: { lines: 80, functions: 80, statements: 80, branches: 60 }
+
+        all: true,
+        include: ["src/**/*.{ts,tsx}"],
+
+        exclude: [
+          "src/main.tsx",            
+          "src/gql/generated.ts",    
+          "**/*.d.ts"
+        ],
+
+        thresholds: {
+          lines: 80,
+          functions: 80,
+          statements: 80,
+          branches: 60
+        }
       }
     }
   };
