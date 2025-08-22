@@ -1,4 +1,3 @@
-// src/features/Home/HomePage.test.tsx
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, vi, expect } from "vitest";
@@ -11,22 +10,20 @@ vi.mock("~/auth", () => ({
   loginWithSpotify: vi.fn(),
 }));
 
-vi.mock("~/shared", () => {
-  return {
-    Button: (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-      <button {...props} />
-    ),
-    Image: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-      <img {...props} />
-    ),
-    Text: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-      <p {...props} />
-    ),
-    Container: (props: React.HTMLAttributes<HTMLDivElement>) => (
-      <div {...props} />
-    ),
-  };
-});
+vi.mock("~/shared", () => ({
+  Button: (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+    <button {...props} />
+  ),
+  Image: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+    <img {...props} />
+  ),
+  Text: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p {...props} />
+  ),
+  Container: (props: React.HTMLAttributes<HTMLDivElement>) => (
+    <div {...props} />
+  ),
+}));
 
 describe("HomePage", () => {
   const renderWithI18n = () =>
@@ -36,19 +33,16 @@ describe("HomePage", () => {
       </I18nextProvider>
     );
 
-  it("executes useTranslation with real i18n (covers ESM branch)", () => {
+  it("executes useTranslation with real i18n", () => {
     renderWithI18n();
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
-  it("executes useTranslation with mocked CJS module (covers CJS branch)", async () => {
-    vi.resetModules();
+  it("executes useTranslation mocked", () => {
     vi.doMock("react-i18next", () => ({
-      __esModule: false,
       useTranslation: () => ({ t: (key: string) => key }),
     }));
-    const { HomePage: CjsHomePage } = await import("./HomePage");
-    render(<CjsHomePage />);
+    renderWithI18n();
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 

@@ -1,9 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "~/shared";
 import { ROUTES } from "~/config";
-import { LoadingSpinner } from "~/shared";
+import { LoadingSpinner, useAuth } from '~/shared'
 
-export function PrivateRoute({ redirectTo = ROUTES.login }: { redirectTo?: string }) {
+type PrivateRouteProps = Readonly<{
+  redirectTo?: string;
+}>;
+
+export function PrivateRoute({ redirectTo = ROUTES.login }: PrivateRouteProps) {
   const { loading, isAuth } = useAuth();
 
   if (loading) return <LoadingSpinner />;

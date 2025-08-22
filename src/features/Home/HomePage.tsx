@@ -7,8 +7,7 @@ export function HomePage() {
 
   return (
     <Container className="min-h-screen grid place-items-center px-4">
-      <div className="grid gap-4 sm:gap-5 md:gap-6 place-items-center 
-        text-center w-full max-w-screen-sm">
+      <div className="grid gap-4 sm:gap-5 md:gap-6 place-items-center text-center w-full max-w-screen-sm">
         <Image
           className="w-[8rem] sm:w-[10.25rem] max-w-full h-auto"
           alt={t("accessibility.spotify-logo")}

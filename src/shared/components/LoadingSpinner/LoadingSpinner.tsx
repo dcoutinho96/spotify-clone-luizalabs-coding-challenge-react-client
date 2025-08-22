@@ -11,42 +11,48 @@ const DURATION = 0.9;
 const STAGGER = 0.15;
 
 export function LoadingSpinner() {
+  const bars = Array.from({ length: BARS }, (_, i) => `bar-${i}`);
+
   return (
-    <svg
-      data-testid='loading'
-      width={SIZE}
-      height={SIZE}
-      viewBox={`0 0 ${SIZE} ${SIZE}`}
-      className="fill-text-primary"
-      xmlns="http://www.w3.org/2000/svg"
-      role="status"
+    <output
+      data-testid="loading"
       aria-label="Loading"
+      className="inline-block"
     >
-      {Array.from({ length: BARS }).map((_, i) => (
-        <rect
-          key={i}
-          x={i * BAR_GAP}
-          y={BASE_Y}
-          width={BAR_WIDTH}
-          height={MIN_HEIGHT}
-          rx={BAR_RADIUS}
-        >
-          <animate
-            attributeName="height"
-            values={`${MIN_HEIGHT};${MAX_HEIGHT};${MIN_HEIGHT}`}
-            dur={`${DURATION}s`}
-            begin={`${i * STAGGER}s`}
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="y"
-            values={`${BASE_Y};${TOP_Y};${BASE_Y}`}
-            dur={`${DURATION}s`}
-            begin={`${i * STAGGER}s`}
-            repeatCount="indefinite"
-          />
-        </rect>
-      ))}
-    </svg>
+      <svg
+        width={SIZE}
+        height={SIZE}
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        className="fill-text-primary"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        {bars.map((id, i) => (
+          <rect
+            key={id}
+            x={i * BAR_GAP}
+            y={BASE_Y}
+            width={BAR_WIDTH}
+            height={MIN_HEIGHT}
+            rx={BAR_RADIUS}
+          >
+            <animate
+              attributeName="height"
+              values={`${MIN_HEIGHT};${MAX_HEIGHT};${MIN_HEIGHT}`}
+              dur={`${DURATION}s`}
+              begin={`${i * STAGGER}s`}
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="y"
+              values={`${BASE_Y};${TOP_Y};${BASE_Y}`}
+              dur={`${DURATION}s`}
+              begin={`${i * STAGGER}s`}
+              repeatCount="indefinite"
+            />
+          </rect>
+        ))}
+      </svg>
+    </output>
   );
 }

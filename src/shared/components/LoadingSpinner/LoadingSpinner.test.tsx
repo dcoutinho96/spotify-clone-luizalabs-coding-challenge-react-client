@@ -3,23 +3,30 @@ import { describe, it, expect } from "vitest";
 import { LoadingSpinner } from "./LoadingSpinner";
 
 describe("LoadingSpinner", () => {
+  it("renders the container with correct accessibility attributes", () => {
+    render(<LoadingSpinner />);
+    const container = screen.getByTestId("loading");
+
+    expect(container.tagName.toLowerCase()).toBe("output");
+    expect(container).toHaveAttribute("aria-label", "Loading");
+  });
+
   it("renders the SVG with correct attributes", () => {
     render(<LoadingSpinner />);
-    const svg = screen.getByTestId("loading");
+    const svg = screen.getByTestId("loading").querySelector("svg")!;
+
     expect(svg).toBeInTheDocument();
     expect(svg).toHaveAttribute("width", "48");
     expect(svg).toHaveAttribute("height", "48");
     expect(svg).toHaveAttribute("viewBox", "0 0 48 48");
-    expect(svg).toHaveAttribute("role", "status");
-    expect(svg).toHaveAttribute("aria-label", "Loading");
+    expect(svg).toHaveAttribute("aria-hidden", "true");
   });
 
-it("renders exactly 3 bars", () => {
-  render(<LoadingSpinner />);
-  const svg = screen.getByTestId("loading");
-  const rects = svg.querySelectorAll("rect");
-  expect(rects.length).toBe(3);
-});
+  it("renders exactly 3 bars", () => {
+    render(<LoadingSpinner />);
+    const rects = screen.getByTestId("loading").querySelectorAll("rect");
+    expect(rects.length).toBe(3);
+  });
 
   it("renders each bar with correct base attributes", () => {
     render(<LoadingSpinner />);
