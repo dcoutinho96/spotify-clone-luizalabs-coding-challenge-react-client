@@ -27,3 +27,5 @@ coverage
 
 .env
 cert
+.secrets
+test_results
