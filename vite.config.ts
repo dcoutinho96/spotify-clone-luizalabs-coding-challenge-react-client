@@ -14,15 +14,21 @@ export default defineConfig(({ mode }) => {
 
   const apiPattern = api ? new RegExp("^" + escapeRegExp(api) + "$") : /\/graphql$/;
 
+  const isCI = process.env.CI === "true" || process.env.NODE_ENV === "test" || process.env.NODE_ENV === "production";
+
   return {
     server: {
       host: "127.0.0.1",
       port: 5173,
       strictPort: true,
-      https: {
-        key: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1-key.pem")),
-        cert: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1.pem")),
-      },
+      ...(isCI
+        ? {} // no HTTPS in CI/production
+        : {
+            https: {
+              key: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1-key.pem")),
+              cert: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1.pem")),
+            },
+          }),
       hmr: {
         host: "127.0.0.1",
         port: 5173,
