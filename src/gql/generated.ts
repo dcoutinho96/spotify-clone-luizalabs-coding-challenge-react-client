@@ -1,4 +1,5 @@
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { fetcher } from '~/gql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -6,26 +7,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -57,7 +38,6 @@ export const useHelloQuery = <
       TData = HelloQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: HelloQueryVariables,
       options?: Omit<UseQueryOptions<HelloQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<HelloQuery, TError, TData>['queryKey'] }
     ) => {
@@ -65,7 +45,7 @@ export const useHelloQuery = <
     return useQuery<HelloQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['Hello'] : ['Hello', variables],
-    queryFn: fetcher<HelloQuery, HelloQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, HelloDocument, variables),
+    queryFn: fetcher<HelloQuery, HelloQueryVariables>(HelloDocument, variables),
     ...options
   }
     )};

@@ -3,6 +3,8 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import path from "path";
+import fs from "fs";
 
 const escapeRegExp = (s: string) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 
@@ -13,14 +15,29 @@ export default defineConfig(({ mode }) => {
   const apiPattern = api ? new RegExp("^" + escapeRegExp(api) + "$") : /\/graphql$/;
 
   return {
+    server: {
+      host: "127.0.0.1",
+      port: 5173,
+      strictPort: true,
+      https: {
+        key: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1-key.pem")),
+        cert: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1.pem")),
+      },
+      hmr: {
+        host: "127.0.0.1",
+        port: 5173,
+      },
+    },
+    resolve: {
+      alias: {
+        "~": path.resolve(__dirname, "src"),
+      },
+    },
     plugins: [
       react(),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: [
-          "assets/favicon.ico",
-          "apple-touch-icon.png"
-        ],
+        includeAssets: ["assets/favicon.ico", "apple-touch-icon.png"],
         manifest: {
           id: "/",
           name: "Spotify Clone – Luizalabs Challenge",
@@ -31,9 +48,19 @@ export default defineConfig(({ mode }) => {
           background_color: "#212121",
           theme_color: "#000",
           icons: [
-            { src: "/assets/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
-            { src: "/assets/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
-          ]
+            {
+              src: "/assets/icon-192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any maskable",
+            },
+            {
+              src: "/assets/icon-512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any maskable",
+            },
+          ],
         },
         workbox: {
           cleanupOutdatedCaches: true,
@@ -42,7 +69,7 @@ export default defineConfig(({ mode }) => {
             "**/assets/icon-192.png",
             "**/assets/icon-512.png",
             "**/apple-touch-icon.png",
-            "**/assets/favicon.ico"
+            "**/assets/favicon.ico",
           ],
           navigateFallback: "/index.html",
           navigateFallbackDenylist: [/^\/graphql(?:$|\/)/],
@@ -54,8 +81,8 @@ export default defineConfig(({ mode }) => {
                 cacheName: "graphql-api",
                 networkTimeoutSeconds: 4,
                 cacheableResponse: { statuses: [0, 200] },
-                expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 } // 1 hour
-              }
+                expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 },
+              },
             },
             {
               urlPattern: ({ request }) => request.destination === "image",
@@ -63,15 +90,18 @@ export default defineConfig(({ mode }) => {
               options: {
                 cacheName: "images",
                 cacheableResponse: { statuses: [0, 200] },
-                expiration: { maxEntries: 60, maxAgeSeconds: 30 * 24 * 60 * 60 }
-              }
-            }
-          ]
+                expiration: {
+                  maxEntries: 60,
+                  maxAgeSeconds: 30 * 24 * 60 * 60,
+                },
+              },
+            },
+          ],
         },
         devOptions: {
-          enabled: false
-        }
-      })
+          enabled: false,
+        },
+      }),
     ],
     test: {
       globals: true,
@@ -82,23 +112,16 @@ export default defineConfig(({ mode }) => {
         provider: "v8",
         reporter: ["text", "lcov"],
         reportsDirectory: "coverage",
-
         all: true,
         include: ["src/**/*.{ts,tsx}"],
-
-        exclude: [
-          "src/main.tsx",
-          "src/gql/generated.ts",
-          "**/*.d.ts"
-        ],
-
+        exclude: ["src/main.tsx", "src/gql/generated.ts", "**/*.d.ts"],
         thresholds: {
           lines: 80,
           functions: 80,
           statements: 80,
-          branches: 60
-        }
-      }
-    }
+          branches: 60,
+        },
+      },
+    },
   };
 });

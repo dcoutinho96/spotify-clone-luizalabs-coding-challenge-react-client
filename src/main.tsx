@@ -5,9 +5,10 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import localforage from "localforage";
 
-import App from "./App";
+import "~/i18n";
+import "./styles/index.pcss";
 
-import "./styles/index.pcss"
+import { App } from "~/base";
 
 const queryClient = new QueryClient({
   defaultOptions: {
