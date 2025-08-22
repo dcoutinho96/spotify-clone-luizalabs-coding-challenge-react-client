@@ -1,5 +1,6 @@
 import { SPOTIFY_TOKEN_URL } from "~/config";
 import { buildRedirectURL } from ".";
+import { authEvents } from "~/shared/"; 
 
 export const handleSpotifyCallback = async () => {
   const url = new URL(window.location.href);
@@ -10,7 +11,6 @@ export const handleSpotifyCallback = async () => {
 
   const verifier = sessionStorage.getItem("pkce_verifier")!;
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-
 
   const res = await fetch(SPOTIFY_TOKEN_URL, {
     method: "POST",
@@ -29,5 +29,8 @@ export const handleSpotifyCallback = async () => {
 
   sessionStorage.setItem("access_token", data.access_token);
   sessionStorage.setItem("refresh_token", data.refresh_token);
+
+  authEvents.emit("token", data.access_token);
+
   return data;
 };

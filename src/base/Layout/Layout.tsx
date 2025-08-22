@@ -19,7 +19,7 @@ const LoginPage = lazy(() =>
 
 export function Layout() {
   const { isAuth } = useAuth();
-  
+
   return (
     <div
       data-testid="layout"

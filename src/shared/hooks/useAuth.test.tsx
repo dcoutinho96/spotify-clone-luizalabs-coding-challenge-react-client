@@ -1,24 +1,178 @@
-import { renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
-import { useAuth } from "./useAuth";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 
-describe("useAuth", () => {
+import { AuthProvider, useAuth, authEvents } from "~/shared";
+
+function TestConsumer() {
+  const auth = useAuth();
+  return (
+    <div>
+      <div data-testid="token">{auth.token ?? "null"}</div>
+      <div data-testid="user">{auth.user?.display_name ?? "null"}</div>
+      <div data-testid="isAuth">{auth.isAuth ? "true" : "false"}</div>
+      <div data-testid="loading">{auth.loading ? "true" : "false"}</div>
+      <button onClick={() => auth.logout()}>logout</button>
+      <button onClick={() => auth.refresh()}>refresh</button>
+    </div>
+  );
+}
+
+describe("AuthProvider + useAuth", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     sessionStorage.clear();
+    global.fetch = vi.fn();
   });
 
-  it("returns unauthenticated state when no token", () => {
-    const { result } = renderHook(() => useAuth());
-    expect(result.current.loading).toBe(false);
-    expect(result.current.isAuth).toBe(false);
-    expect(result.current.token).toBeNull();
+  it("throws if useAuth is used outside provider", () => {
+    const BadConsumer = () => {
+      expect(() => useAuth()).toThrow();
+      return null;
+    };
+    render(<BadConsumer />);
   });
 
-  it("returns authenticated state when token exists", () => {
-    sessionStorage.setItem("access_token", "test-token");
-    const { result } = renderHook(() => useAuth());
-    expect(result.current.loading).toBe(false);
-    expect(result.current.isAuth).toBe(true);
-    expect(result.current.token).toBe("test-token");
+  it("starts unauthenticated when no token", async () => {
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+    expect(screen.getByTestId("token").textContent).toBe("null");
+    expect(screen.getByTestId("user").textContent).toBe("null");
+    expect(screen.getByTestId("isAuth").textContent).toBe("false");
+    expect(screen.getByTestId("loading").textContent).toBe("false");
+  });
+
+  it("fetches user when token exists", async () => {
+    sessionStorage.setItem("access_token", "abc123");
+    (global.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "1", display_name: "Tester" }),
+    });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("Tester")
+    );
+    expect(screen.getByTestId("isAuth").textContent).toBe("true");
+  });
+
+  it("clears token if /me fails", async () => {
+    sessionStorage.setItem("access_token", "badtoken");
+    (global.fetch as any).mockResolvedValue({ ok: false, status: 401 });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("token").textContent).toBe("null")
+    );
+    expect(screen.getByTestId("user").textContent).toBe("null");
+    expect(screen.getByTestId("isAuth").textContent).toBe("false");
+  });
+
+  it("updates state on authEvents token emit", async () => {
+    (global.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "2", display_name: "EventUser" }),
+    });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    authEvents.emit("token", "neat-token");
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("EventUser")
+    );
+  });
+
+  it("clears state on authEvents logout emit", async () => {
+    sessionStorage.setItem("access_token", "abc");
+    (global.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "1", display_name: "X" }),
+    });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("X")
+    );
+
+    authEvents.emit("logout");
+
+    await waitFor(() =>
+      expect(screen.getByTestId("isAuth").textContent).toBe("false")
+    );
+  });
+
+  it("logout() calls emit and clears state", async () => {
+    sessionStorage.setItem("access_token", "abc");
+    (global.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: "1", display_name: "Y" }),
+    });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("Y")
+    );
+
+    screen.getByText("logout").click();
+
+    await waitFor(() =>
+      expect(screen.getByTestId("isAuth").textContent).toBe("false")
+    );
+  });
+
+  it("refresh() refetches user", async () => {
+    sessionStorage.setItem("access_token", "abc");
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ id: "1", display_name: "First" }),
+    });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("First")
+    );
+
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ id: "2", display_name: "Second" }),
+    });
+
+    screen.getByText("refresh").click();
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("Second")
+    );
   });
 });
