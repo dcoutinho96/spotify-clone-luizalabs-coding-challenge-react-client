@@ -1,9 +1,15 @@
 {
-    "accessibility": {
-        "spotify-logo": "Logotipo do Spotify"
-    },
-    "home": {
-        "login-instructions": "Entra com sua conta Spotify clicando no botão abaixo",
-        "login-button": "Entrar"
-    }
+  "accessibility": {
+    "spotify-logo": "Logotipo do Spotify"
+  },
+  "home": {
+    "login-instructions": "Entra com sua conta Spotify clicando no botão abaixo",
+    "login-button": "Entrar"
+  },
+  "navbar": {
+    "home": "Home",
+    "artists": "Artistas",
+    "playlists": "Playlists",
+    "profile": "Perfil"
+  }
 }

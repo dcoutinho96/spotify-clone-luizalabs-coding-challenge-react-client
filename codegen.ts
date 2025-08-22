@@ -3,12 +3,12 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   schema: [
-    'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/dist/schema/**/*.graphql',
+    'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/dist/schema/base.graphql',
   ],
   documents: [
     'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/dist/operations/**/*.graphql',
+    'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/dist/mutations/**/*.graphql',
   ],
-  ignoreNoDocuments: true,
   generates: {
     'src/gql/generated.ts': {
       plugins: [
@@ -17,12 +17,8 @@ const config: CodegenConfig = {
         'typescript-react-query',
       ],
       config: {
-        fetcher: {
-          func: '~/gql#fetcher',
-          isReactHook: false,
-        },
-        reactQueryVersion: 5,
-        legacyMode: false,
+        fetcher: './fetcher#fetcher',
+        reactQueryVersion: 5
       },
     },
   },

@@ -1,4 +1,3 @@
-// src/base/Layout/Layout.test.tsx
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -11,27 +10,39 @@ let mockAuthState = {
   token: null as string | null,
 };
 
+// Simple mocks
 vi.mock("~/features", () => ({
   HomePage: () => <div>HOME PAGE</div>,
   DashboardPage: () => <div>MOCK DASHBOARD PAGE</div>,
 }));
 
-vi.mock("~/shared", () => ({
-  LoadingSpinner: () => <div data-testid="spinner">MOCK SPINNER</div>,
-  useAuth: () => mockAuthState,
-}));
-
-vi.mock("~/base", () => {
+// Type-safe shared mock
+vi.mock("~/shared", async () => {
+  const actual: typeof import("~/shared") = await vi.importActual<typeof import("~/shared")>("~/shared");
   return {
+    ...actual,
+    LoadingSpinner: () => <div data-testid="spinner">MOCK SPINNER</div>,
+    useAuth: () => mockAuthState,
+    NavItem: ({ label }: { label: string }) => <div>{label}</div>,
+  };
+});
+
+// Type-safe base mock
+vi.mock("~/base", async () => {
+  const actual: typeof import("~/base") = await vi.importActual<typeof import("~/base")>("~/base");
+  return {
+    ...actual,
     LoginPage: () => <div>LOGIN PAGE</div>,
     PrivateRoute: () => {
       if (mockAuthState.loading) return <div data-testid="spinner">MOCK SPINNER</div>;
       if (mockAuthState.isAuth) return <div>MOCK DASHBOARD PAGE</div>;
       return <div data-testid="blocked">BLOCKED</div>;
     },
+    Navbar: () => <nav data-testid="navbar">MOCK NAVBAR</nav>,
   };
 });
 
+// Type-safe React mock
 vi.mock("react", async () => {
   const actual = await vi.importActual<typeof React>("react");
   return {
@@ -56,7 +67,7 @@ vi.mock("react", async () => {
 
 const { Layout } = await import("./Layout");
 
-describe("Layout routing", () => {
+describe("Layout routing with isAuth", () => {
   beforeEach(() => {
     mockAuthState = { loading: false, isAuth: false, token: null };
   });
@@ -68,9 +79,20 @@ describe("Layout routing", () => {
       </MemoryRouter>
     );
 
-  it("renders the wrapper", () => {
+  it("renders the layout wrapper", () => {
     renderAt(ROUTES.home);
     expect(screen.getByTestId("layout")).toBeInTheDocument();
+  });
+
+  it("does NOT render Navbar when not authenticated", () => {
+    renderAt(ROUTES.home);
+    expect(screen.queryByTestId("navbar")).not.toBeInTheDocument();
+  });
+
+  it("renders Navbar when authenticated", () => {
+    mockAuthState.isAuth = true;
+    renderAt(ROUTES.home);
+    expect(screen.getByTestId("navbar")).toBeInTheDocument();
   });
 
   it("renders HomePage at '/'", async () => {
@@ -100,5 +122,13 @@ describe("Layout routing", () => {
     mockAuthState.token = "mock-token";
     renderAt(ROUTES.dashboard);
     expect(await screen.findByText("MOCK DASHBOARD PAGE")).toBeInTheDocument();
+  });
+
+  it("renders nothing (empty) for unknown routes", async () => {
+    renderAt("/unknown");
+    expect(screen.getByTestId("layout")).toBeInTheDocument();
+    expect(screen.queryByText("HOME PAGE")).not.toBeInTheDocument();
+    expect(screen.queryByText("LOGIN PAGE")).not.toBeInTheDocument();
+    expect(screen.queryByText("MOCK DASHBOARD PAGE")).not.toBeInTheDocument();
   });
 });

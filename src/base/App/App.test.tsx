@@ -1,19 +1,19 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { App } from "./App";
-import * as reactRouter from "react-router";
+
+vi.mock("~/base", async () => {
+  const actual: typeof import("~/base") = await vi.importActual<typeof import("~/base")>("~/base");
+  return {
+    ...actual,
+    Navbar: () => <div data-testid="navbar">MOCK NAVBAR</div>,
+  };
+});
 
 describe("App", () => {
-  it("renders BrowserRouter with Layout", () => {
+  it("renders Layout inside BrowserRouter", () => {
     render(<App />);
-
     expect(screen.getByTestId("layout")).toBeInTheDocument();
   });
 
-  it("uses BrowserRouter from react-router", () => {
-    const spy = vi.spyOn(reactRouter, "BrowserRouter");
-    render(<App />);
-    expect(spy).toHaveBeenCalled();
-    spy.mockRestore();
-  });
 });

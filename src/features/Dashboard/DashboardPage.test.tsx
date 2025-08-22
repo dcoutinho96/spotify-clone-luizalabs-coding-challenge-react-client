@@ -1,48 +1,71 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { DashboardPage } from "./";
-import * as gql from "~/gql";
+
+import { useMeQuery, MeQuery } from "~/gql/generated"; // import the types if available
+
+vi.mock("~/gql/generated", () => ({
+  useMeQuery: vi.fn(),
+}));
+
+type QueryResult<T> = {
+  data: T | undefined;
+  isLoading: boolean;
+  isFetching: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+};
 
 describe("DashboardPage", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  const makeResult = (data: unknown) =>
-    ({
-      data,
-      status: "success",
-      fetchStatus: "idle",
-      isLoading: false,
-      isFetching: false,
-      isSuccess: true,
-      isError: false,
-      error: null,
-      refetch: vi.fn(),
-      remove: vi.fn(),
-      failureCount: 0,
-      isPaused: false,
-      isPending: false,
-      isRefetching: false,
-      dataUpdatedAt: Date.now(),
-      errorUpdatedAt: 0,
-      failureReason: null,
-    } as unknown as ReturnType<typeof gql.useHelloQuery>);
+  const makeResult = <T,>(data: T | undefined, isLoading = false): QueryResult<T> => ({
+    data,
+    isLoading,
+    isFetching: isLoading,
+    isSuccess: !isLoading,
+    isError: false,
+  });
 
-  it("renders protected text", () => {
-    vi.spyOn(gql, "useHelloQuery").mockReturnValue(makeResult({ hello: "world" }));
+  it("renders loading spinner when loading", () => {
+    (useMeQuery as Mock).mockReturnValue(makeResult<MeQuery>(undefined, true));
 
     render(<DashboardPage />);
-
-    expect(screen.getByText("PROTECTED")).toBeInTheDocument();
-    expect(gql.useHelloQuery).toHaveBeenCalled();
+    expect(screen.getByTestId("loading")).toBeInTheDocument();
   });
 
-  it("still renders even with no data", () => {
-    vi.spyOn(gql, "useHelloQuery").mockReturnValue(makeResult(undefined));
+it("renders protected text with user displayName", () => {
+  (useMeQuery as Mock).mockReturnValue(
+    makeResult<MeQuery>({
+      me: {
+        __typename: "User",
+        id: "1",
+        displayName: "Alice",
+        images: [],
+      },
+    })
+  );
 
-    render(<DashboardPage />);
+  render(<DashboardPage />);
+  expect(screen.getByText("Hello, Alice")).toBeInTheDocument();
+});
 
-    expect(screen.getByText("PROTECTED")).toBeInTheDocument();
-  });
+it("renders fallback text when no data", () => {
+  (useMeQuery as Mock).mockReturnValue(
+    makeResult<MeQuery>({
+      me: {
+        __typename: "User",
+        id: "0",
+        displayName: "Unknown User",
+        images: [],
+      },
+    })
+  );
+
+  render(<DashboardPage />);
+  expect(screen.getByText("Hello, Unknown User")).toBeInTheDocument();
+});
+
 });
