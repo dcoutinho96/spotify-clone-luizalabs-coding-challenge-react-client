@@ -2,12 +2,13 @@ import 'dotenv/config';
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  schema:
-    process.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL ||
-    'http://localhost:4000/',
-  documents: [
-    'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/operations/**/*.graphql',
+  schema: [
+    'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/dist/schema/**/*.graphql',
   ],
+  documents: [
+    'node_modules/@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema/dist/operations/**/*.graphql',
+  ],
+  ignoreNoDocuments: true,
   generates: {
     'src/gql/generated.ts': {
       plugins: [
@@ -22,7 +23,7 @@ const config: CodegenConfig = {
         },
         reactQueryVersion: 5,
         legacyMode: false,
-      }
+      },
     },
   },
 };

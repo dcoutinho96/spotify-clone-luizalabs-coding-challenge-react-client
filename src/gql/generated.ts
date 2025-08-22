@@ -1,5 +1,3 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { fetcher } from '~/gql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -21,31 +19,4 @@ export type Query = {
   hello: Scalars['String']['output'];
 };
 
-export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 
-
-export type HelloQuery = { __typename?: 'Query', hello: string };
-
-
-
-export const HelloDocument = `
-    query Hello {
-  hello
-}
-    `;
-
-export const useHelloQuery = <
-      TData = HelloQuery,
-      TError = unknown
-    >(
-      variables?: HelloQueryVariables,
-      options?: Omit<UseQueryOptions<HelloQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<HelloQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<HelloQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['Hello'] : ['Hello', variables],
-    queryFn: fetcher<HelloQuery, HelloQueryVariables>(HelloDocument, variables),
-    ...options
-  }
-    )};
