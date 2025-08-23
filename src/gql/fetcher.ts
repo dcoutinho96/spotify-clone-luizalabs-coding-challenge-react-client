@@ -8,7 +8,7 @@ export const fetcher =
       const token = sessionStorage.getItem("access_token");
 
       const res = await fetch(
-        import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL as string,
+        import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL as string || 'http://localhost:4000',
         {
           method: "POST",
           headers: {

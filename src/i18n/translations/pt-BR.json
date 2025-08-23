@@ -13,7 +13,20 @@
   "navbar": {
     "home": "Home",
     "artists": "Artistas",
+    "albums": "Álbuns",
     "playlists": "Playlists",
     "profile": "Perfil"
+  },
+  "artist": {
+    "title": "Meus Artistas",
+    "subtitle": "Sua coleção pessoal de artistas",
+    "notFound": "Artista não encontrado",
+    "albums": {
+      "title": "Álbuns de {{name}}",
+      "subtitle": "Coleção de álbuns do artista",
+      "releaseDate": "Lançado em",
+      "unknownDate": "Data desconhecida",
+      "tracks": "{{count}} faixas"
+    }
   }
 }

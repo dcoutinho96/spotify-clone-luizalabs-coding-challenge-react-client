@@ -17,6 +17,14 @@ const UserProfilePage = lazy(() =>
   import("~/features").then((module) => ({ default: module.UserProfilePage }))
 );
 
+const ArtistsPage = lazy(() =>
+  import("~/features").then((module) => ({ default: module.ArtistsPage }))
+);
+
+const ArtistAlbumsPage = lazy(() =>
+  import("~/features").then((module) => ({ default: module.ArtistAlbumsPage }))
+);
+
 const LoginPage = lazy(() =>
   import("~/base").then((module) => ({ default: module.LoginPage }))
 );
@@ -41,6 +49,8 @@ export function Layout() {
             <Route element={<PrivateRoute />}>
               <Route path={ROUTES.dashboard} element={<DashboardPage />} />
               <Route path={ROUTES.profile} element={<UserProfilePage />} />
+              <Route path={ROUTES.artists} element={<ArtistsPage />} />
+              <Route path={ROUTES.artistAlbums} element={<ArtistAlbumsPage />} />
             </Route>
           </Routes>
         </Suspense>

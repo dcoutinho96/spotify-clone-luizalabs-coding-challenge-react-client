@@ -14,6 +14,10 @@ describe("fetcher", () => {
     global.fetch = originalFetch;
   });
 
+  const API_BASE =
+    import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL ||
+    "http://localhost:4000";
+
   it("sends request without Authorization header when no token", async () => {
     (global.fetch as unknown as Mock).mockResolvedValueOnce({
       json: async () => ({ data: { ok: true } }),
@@ -27,7 +31,7 @@ describe("fetcher", () => {
 
     expect(result).toEqual({ ok: true });
     expect(global.fetch).toHaveBeenCalledWith(
-      import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL,
+      API_BASE,
       expect.objectContaining({
         method: "POST",
         headers: expect.objectContaining({
@@ -49,7 +53,7 @@ describe("fetcher", () => {
     await fn();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL,
+      API_BASE,
       expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: "Bearer test-token",
@@ -69,7 +73,7 @@ describe("fetcher", () => {
     await fn();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL,
+      API_BASE,
       expect.objectContaining({
         headers: expect.objectContaining({
           "X-Test": "123",
