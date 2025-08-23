@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeEach, afterEach, vi, Mock } from "vitest";
 import { handleSpotifyCallback } from "./callback";
 import { SPOTIFY_TOKEN_URL } from "~/config";

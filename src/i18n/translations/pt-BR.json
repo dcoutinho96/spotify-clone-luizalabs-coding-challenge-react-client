@@ -6,6 +6,10 @@
     "login-instructions": "Entra com sua conta Spotify clicando no botão abaixo",
     "login-button": "Entrar"
   },
+  "profile": {
+    "sign-out-button": "Sair",
+    "alt-profile-picture": "Imagem de perfil"
+  },
   "navbar": {
     "home": "Home",
     "artists": "Artistas",

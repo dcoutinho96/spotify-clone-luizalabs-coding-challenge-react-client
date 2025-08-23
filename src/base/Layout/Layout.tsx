@@ -13,6 +13,10 @@ const DashboardPage = lazy(() =>
   import("~/features").then((module) => ({ default: module.DashboardPage }))
 );
 
+const UserProfilePage = lazy(() =>
+  import("~/features").then((module) => ({ default: module.UserProfilePage }))
+);
+
 const LoginPage = lazy(() =>
   import("~/base").then((module) => ({ default: module.LoginPage }))
 );
@@ -36,6 +40,7 @@ export function Layout() {
 
             <Route element={<PrivateRoute />}>
               <Route path={ROUTES.dashboard} element={<DashboardPage />} />
+              <Route path={ROUTES.profile} element={<UserProfilePage />} />
             </Route>
           </Routes>
         </Suspense>

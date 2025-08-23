@@ -59,7 +59,6 @@ export function LoadingSpinner() {
   );
 }
 
-
 declare global {
   interface Window {
     __spinnerStart?: number;

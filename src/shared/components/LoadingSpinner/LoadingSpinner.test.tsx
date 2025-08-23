@@ -23,14 +23,11 @@ it("renders each bar with correct base styles", () => {
   bars.forEach((bar, i) => {
     
     expect(bar).toHaveStyle({ width: "6px" });
-
     
     const bg = bar.style.backgroundColor;
     expect(bg === "currentColor" || bg === "currentcolor").toBe(true);
-
     
     expect(bar.style.borderRadius).toBe("2px");
-
     
     if (i > 0) {
       expect(bar).toHaveStyle({ marginLeft: "4px" }); 

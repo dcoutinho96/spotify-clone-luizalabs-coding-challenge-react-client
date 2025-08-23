@@ -1,0 +1,107 @@
+import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { UserProfilePage } from "./UserProfilePage";
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const dict: Record<string, string> = {
+        "profile.alt-profile-picture": "Profile picture",
+        "profile.sign-out-button": "Sign out",
+      };
+      return dict[key] ?? key;
+    },
+  }),
+}));
+
+type MeImage = { url: string };
+type Me = {
+  __typename: "User";
+  id: string;
+  displayName: string;
+  images: MeImage[];
+};
+type MeQuery = { me: Me };
+
+vi.mock("~/gql", () => ({
+  useMeQuery: vi.fn(),
+}));
+
+import { useMeQuery } from "~/gql";
+
+type QueryResult<T> = {
+  data: T | undefined;
+  isLoading: boolean;
+  isFetching: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+};
+
+const makeResult = <T,>(data: T | undefined, isLoading = false): QueryResult<T> => ({
+  data,
+  isLoading,
+  isFetching: isLoading,
+  isSuccess: !isLoading && !!data,
+  isError: false,
+});
+
+describe("UserProfilePage", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("shows loading spinner when isLoading is true", () => {
+    (useMeQuery as unknown as Mock).mockReturnValue(makeResult<MeQuery>(undefined, true));
+
+    render(<UserProfilePage />);
+
+    expect(screen.getByTestId("loading")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Sign out" })).not.toBeInTheDocument();
+  });
+
+  it("renders profile once data is loaded", () => {
+    (useMeQuery as unknown as Mock).mockReturnValue(
+      makeResult<MeQuery>({
+        me: {
+          __typename: "User",
+          id: "1",
+          displayName: "Alice Cooper",
+          images: [{ url: "https://example.com/alice.jpg" }],
+        },
+      })
+    );
+
+    render(<UserProfilePage />);
+    
+    expect(screen.getByText("Alice Cooper")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+    
+    const img = screen.getByRole("img", { name: "Profile picture" }) as HTMLImageElement;
+    
+    expect(img).toHaveAttribute("src", "https://example.com/alice.jpg");
+    
+    expect(img).toHaveClass("w-32");
+    expect(img).toHaveClass("aspect-square");
+    expect(img).toHaveClass("rounded-full");
+    expect(img).toHaveClass("object-cover");
+  });
+
+  it("falls back to placeholder when there is no image", () => {
+    (useMeQuery as unknown as Mock).mockReturnValue(
+      makeResult<MeQuery>({
+        me: {
+          __typename: "User",
+          id: "2",
+          displayName: "No Pic",
+          images: [],
+        },
+      })
+    );
+
+    render(<UserProfilePage />);
+
+    const img = screen.getByRole("img", { name: "Profile picture" }) as HTMLImageElement;
+    expect(img).toHaveAttribute("src", "/assets/placeholder-avatar.png");
+    expect(screen.getByText("No Pic")).toBeInTheDocument();
+  });
+});

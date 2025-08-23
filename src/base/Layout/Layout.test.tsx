@@ -10,12 +10,10 @@ let mockAuthState = {
   token: null as string | null,
 };
 
-
 vi.mock("~/features", () => ({
   HomePage: () => <div>HOME PAGE</div>,
   DashboardPage: () => <div>MOCK DASHBOARD PAGE</div>,
 }));
-
 
 vi.mock("~/shared", async () => {
   const actual: typeof import("~/shared") = await vi.importActual<typeof import("~/shared")>("~/shared");
@@ -26,7 +24,6 @@ vi.mock("~/shared", async () => {
     NavItem: ({ label }: { label: string }) => <div>{label}</div>,
   };
 });
-
 
 vi.mock("~/base", async () => {
   const actual: typeof import("~/base") = await vi.importActual<typeof import("~/base")>("~/base");
@@ -41,7 +38,6 @@ vi.mock("~/base", async () => {
     Navbar: () => <nav data-testid="navbar">MOCK NAVBAR</nav>,
   };
 });
-
 
 vi.mock("react", async () => {
   const actual = await vi.importActual<typeof React>("react");
