@@ -116,7 +116,7 @@ describe("AuthProvider + useAuth", () => {
       expect(screen.getByTestId("user").textContent).toBe("X")
     );
 
-    authEvents.emit("logout");
+    authEvents.emit("logout", undefined);
 
     await waitFor(() =>
       expect(screen.getByTestId("isAuth").textContent).toBe("false")

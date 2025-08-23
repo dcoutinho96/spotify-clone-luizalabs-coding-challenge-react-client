@@ -1,58 +1,65 @@
-const SIZE = 48;
+import { motion, useAnimationControls } from "framer-motion";
+import { useEffect } from "react";
+
 const BARS = 3;
 const BAR_WIDTH = 6;
 const BAR_GAP = 10;
 const BAR_RADIUS = 2;
 const MIN_HEIGHT = 12;
 const MAX_HEIGHT = 36;
-const BASE_Y = 20;
-const TOP_Y = 4;
 const DURATION = 0.9;
 const STAGGER = 0.15;
 
 export function LoadingSpinner() {
-  const bars = Array.from({ length: BARS }, (_, i) => `bar-${i}`);
+  const controls = Array.from({ length: BARS }, () => useAnimationControls());
+
+  useEffect(() => {
+    
+    if (!window.__spinnerStart) {
+      window.__spinnerStart = Date.now();
+    }
+    const elapsed = (Date.now() - window.__spinnerStart) / 1000;
+    const offset = elapsed % DURATION;
+
+    controls.forEach((ctrl, i) => {
+      ctrl.start({
+        height: [MIN_HEIGHT, MAX_HEIGHT, MIN_HEIGHT],
+        transition: {
+          duration: DURATION,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: i * STAGGER - offset,
+        },
+      });
+    });
+  }, [controls]);
 
   return (
     <output
       data-testid="loading"
       aria-label="Loading"
-      className="inline-block"
+      className="inline-flex items-end h-[48px]"
     >
-      <svg
-        width={SIZE}
-        height={SIZE}
-        viewBox={`0 0 ${SIZE} ${SIZE}`}
-        className="fill-text-primary"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        {bars.map((id, i) => (
-          <rect
-            key={id}
-            x={i * BAR_GAP}
-            y={BASE_Y}
-            width={BAR_WIDTH}
-            height={MIN_HEIGHT}
-            rx={BAR_RADIUS}
-          >
-            <animate
-              attributeName="height"
-              values={`${MIN_HEIGHT};${MAX_HEIGHT};${MIN_HEIGHT}`}
-              dur={`${DURATION}s`}
-              begin={`${i * STAGGER}s`}
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="y"
-              values={`${BASE_Y};${TOP_Y};${BASE_Y}`}
-              dur={`${DURATION}s`}
-              begin={`${i * STAGGER}s`}
-              repeatCount="indefinite"
-            />
-          </rect>
-        ))}
-      </svg>
+      {controls.map((ctrl, i) => (
+        <motion.div
+          key={i}
+          animate={ctrl}
+          style={{
+            height: MIN_HEIGHT,
+            width: BAR_WIDTH,
+            borderRadius: BAR_RADIUS,
+            backgroundColor: "currentColor",
+            marginLeft: i > 0 ? BAR_GAP - BAR_WIDTH : 0,
+          }}
+        />
+      ))}
     </output>
   );
+}
+
+
+declare global {
+  interface Window {
+    __spinnerStart?: number;
+  }
 }

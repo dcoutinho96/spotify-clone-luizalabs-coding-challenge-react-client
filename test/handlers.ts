@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-// Match whatever endpoint you pass to App in the test
+
 export const handlers = [
   http.post("http://test-api/graphql", async ({ request }) => {
     const { query } = (await request.json()) as { query?: string };

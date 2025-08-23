@@ -25,8 +25,8 @@ export function LoginPage() {
       try {
         await handleSpotifyCallback();
         navigate(ROUTES.dashboard);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (err) {
+        
+      } catch (_err) {
         navigate(ROUTES.home);
       }
     })();

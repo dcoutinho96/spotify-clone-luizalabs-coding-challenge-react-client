@@ -26,22 +26,32 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-type AuthEventType = "token" | "logout";
+type AuthEventPayloads = {
+  token: string;
+  logout: undefined;
+};
+
+type AuthEventType = keyof AuthEventPayloads;
 
 class AuthEvents {
-  private listeners: Record<AuthEventType, Array<(payload?: any) => void>> = {
-    token: [],
-    logout: [],
+  private listeners: {
+    [K in AuthEventType]: Set<(payload: AuthEventPayloads[K]) => void>;
+  } = {
+    token: new Set(),
+    logout: new Set(),
   };
 
-  on(type: AuthEventType, cb: (payload?: any) => void) {
-    this.listeners[type].push(cb);
+  on<K extends AuthEventType>(
+    type: K,
+    cb: (payload: AuthEventPayloads[K]) => void
+  ) {
+    this.listeners[type].add(cb);
     return () => {
-      this.listeners[type] = this.listeners[type].filter((fn) => fn !== cb);
+      this.listeners[type].delete(cb);
     };
   }
 
-  emit(type: AuthEventType, payload?: any) {
+  emit<K extends AuthEventType>(type: K, payload: AuthEventPayloads[K]) {
     this.listeners[type].forEach((cb) => cb(payload));
   }
 }
@@ -85,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [fetchMe]);
 
   useEffect(() => {
-    const unsubToken = authEvents.on("token", (newToken: string) => {
+    const unsubToken = authEvents.on("token", (newToken) => {
       sessionStorage.setItem(TOKEN_KEY, newToken);
       setToken(newToken);
     });
@@ -101,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    authEvents.emit("logout");
+    authEvents.emit("logout", undefined);
   }, []);
 
   return (

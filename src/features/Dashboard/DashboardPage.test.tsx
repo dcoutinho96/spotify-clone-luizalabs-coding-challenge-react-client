@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { DashboardPage } from "./";
 
-import { useMeQuery, MeQuery } from "~/gql/generated"; // import the types if available
+import { useMeQuery, MeQuery } from "~/gql/generated"; 
 
 vi.mock("~/gql/generated", () => ({
   useMeQuery: vi.fn(),

@@ -10,13 +10,13 @@ let mockAuthState = {
   token: null as string | null,
 };
 
-// Simple mocks
+
 vi.mock("~/features", () => ({
   HomePage: () => <div>HOME PAGE</div>,
   DashboardPage: () => <div>MOCK DASHBOARD PAGE</div>,
 }));
 
-// Type-safe shared mock
+
 vi.mock("~/shared", async () => {
   const actual: typeof import("~/shared") = await vi.importActual<typeof import("~/shared")>("~/shared");
   return {
@@ -27,7 +27,7 @@ vi.mock("~/shared", async () => {
   };
 });
 
-// Type-safe base mock
+
 vi.mock("~/base", async () => {
   const actual: typeof import("~/base") = await vi.importActual<typeof import("~/base")>("~/base");
   return {
@@ -42,7 +42,7 @@ vi.mock("~/base", async () => {
   };
 });
 
-// Type-safe React mock
+
 vi.mock("react", async () => {
   const actual = await vi.importActual<typeof React>("react");
   return {

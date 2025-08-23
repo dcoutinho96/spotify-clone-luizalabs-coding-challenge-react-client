@@ -1,4 +1,4 @@
-/// <reference types="vitest" />
+
 
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       strictPort: true,
       ...(isCI
-        ? {} // no HTTPS in CI/production
+        ? {} 
         : {
             https: {
               key: fs.readFileSync(path.resolve(__dirname, "cert/127.0.0.1-key.pem")),
