@@ -15,10 +15,10 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-brand text-[var(--color-text-inverse)] hover:brightness-110",
-  secondary: "bg-[var(--color-surface-3)] text-[var(--color-text-primary)] hover:brightness-125",
-  outline: "border border-[var(--color-border)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-3)]",
-  ghost: "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-3)]",
+  primary: "bg-brand text-text-inverse hover:brightness-110",
+  secondary: "bg-surface-3 text-text-primary hover:brightness-125",
+  outline: "border border-border text-text-primary hover:bg-surface-3",
+  ghost: "text-text-secondary hover:bg-surface-3",
 };
 
 export const Button: React.FC<ButtonProps> = ({

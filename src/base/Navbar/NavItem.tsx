@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { Text } from "../Text";
+import { Text } from "~/shared";
 
 interface NavItemProps {
   to: string;
@@ -10,30 +10,31 @@ interface NavItemProps {
 }
 
 export function NavItem({ to, icon: Icon, label, current }: NavItemProps) {
-  const baseClasses =
-    "flex items-center gap-4 rounded-md transition-colors";
+  const baseClasses = "flex items-center md:gap-4 rounded-md transition-colors";
 
-  const activeClasses = "text-white font-semibold";
-  const inactiveClasses = "text-gray-400 hover:text-white";
+  const activeClasses = "text-text-primary font-bold";
+  const inactiveClasses = "text-text-secondary hover:text-text-primary";
 
-  const colorClass = current ? "text-white" : "text-gray-400 hover:text-white";
+  const iconColorClass = current
+    ? "text-text-primary"
+    : "text-text-secondary group-hover:text-text-primary";
 
   return (
     <NavLink
       to={to}
       aria-label={label}
-      aria-current={current ? "page" : undefined} 
+      aria-current={current ? "page" : undefined}
       data-current={current ? "true" : undefined}
-      className={baseClasses}
+      className={`${baseClasses} group`}
     >
       <Icon
-        className={`w-6 h-6 shrink-0 ${colorClass}`} 
+        className={`w-6 h-6 shrink-0 ${iconColorClass}`}
         aria-hidden="true"
         focusable="false"
       />
       <Text
         as="span"
-        className={`font-dmsans font-bold text-lg sm:text-xl tracking-[-0.06em] ${
+        className={`hidden md:inline font-dmsans text-lg tracking-[-0.06em] ${
           current ? activeClasses : inactiveClasses
         }`}
       >

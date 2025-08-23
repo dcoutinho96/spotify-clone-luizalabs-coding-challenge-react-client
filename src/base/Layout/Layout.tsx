@@ -23,12 +23,12 @@ export function Layout() {
   return (
     <div
       data-testid="layout"
-      className="flex min-h-screen bg-black text-white"
+      className="flex min-h-screen bg-surface-1 text-primary"
     >
       { isAuth && (
         <Navbar />
       )}
-      <main className="flex-1 overflow-y-auto grid place-items-center">
+      <main className="flex-1 overflow-y-auto grid place-items-center bg-surface-1">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path={ROUTES.home} element={<HomePage />} />

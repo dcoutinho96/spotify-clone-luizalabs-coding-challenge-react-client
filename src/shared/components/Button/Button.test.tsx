@@ -35,9 +35,9 @@ describe("Button (accessible)", () => {
       </>
     );
     expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("bg-brand");
-    expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass("bg-[var(--color-surface-3)]");
+    expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass("bg-surface-3");
     expect(screen.getByRole("button", { name: "Outline" })).toHaveClass("border");
-    expect(screen.getByRole("button", { name: "Ghost" })).toHaveClass("text-[var(--color-text-secondary)]");
+    expect(screen.getByRole("button", { name: "Ghost" })).toHaveClass("text-text-secondary");
   });
 
   it("handles disabled state with aria-disabled", () => {
@@ -63,7 +63,11 @@ describe("Button (accessible)", () => {
 
   it("does not fire onClick when disabled", () => {
     const handleClick = vi.fn();
-    render(<Button onClick={handleClick} disabled>Click</Button>);
+    render(
+      <Button onClick={handleClick} disabled>
+        Click
+      </Button>
+    );
     fireEvent.click(screen.getByRole("button", { name: "Click" }));
     expect(handleClick).not.toHaveBeenCalled();
   });
