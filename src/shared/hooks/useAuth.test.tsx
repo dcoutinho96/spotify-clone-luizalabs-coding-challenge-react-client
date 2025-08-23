@@ -21,6 +21,7 @@ describe("AuthProvider + useAuth", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     sessionStorage.clear();
+    localStorage.clear(); 
     global.fetch = vi.fn();
   });
 
@@ -63,7 +64,7 @@ describe("AuthProvider + useAuth", () => {
     expect(screen.getByTestId("isAuth").textContent).toBe("true");
   });
 
-  it("clears token if /me fails", async () => {
+  it("clears token if /me fails and no cached user", async () => {
     sessionStorage.setItem("access_token", "badtoken");
     (global.fetch as any).mockResolvedValue({ ok: false, status: 401 });
 
@@ -78,6 +79,28 @@ describe("AuthProvider + useAuth", () => {
     );
     expect(screen.getByTestId("user").textContent).toBe("null");
     expect(screen.getByTestId("isAuth").textContent).toBe("false");
+  });
+
+  it("falls back to cached user if /me fails and cached user exists", async () => {
+    localStorage.setItem(
+      "auth_user",
+      JSON.stringify({ id: "c1", display_name: "Cached" })
+    );
+    sessionStorage.setItem("access_token", "badtoken");
+
+    (global.fetch as any).mockResolvedValue({ ok: false, status: 401 });
+
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("user").textContent).toBe("Cached")
+    );
+    expect(screen.getByTestId("token").textContent).toBe("badtoken");
+    expect(screen.getByTestId("isAuth").textContent).toBe("true");
   });
 
   it("updates state on authEvents token emit", async () => {
