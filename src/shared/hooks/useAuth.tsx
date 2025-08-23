@@ -8,6 +8,7 @@ import {
 } from "react";
 
 const TOKEN_KEY = "access_token";
+const USER_KEY = "auth_user";
 
 type User = {
   id: string;
@@ -62,7 +63,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
     sessionStorage.getItem(TOKEN_KEY)
   );
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const cached = localStorage.getItem(USER_KEY);
+    return cached ? (JSON.parse(cached) as User) : null;
+  });
   const [loading, setLoading] = useState<boolean>(!!token);
 
   const fetchMe = useCallback(async () => {
@@ -80,11 +84,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!res.ok) throw new Error(`Spotify /me failed: ${res.status}`);
       const data: User = await res.json();
       setUser(data);
+      localStorage.setItem(USER_KEY, JSON.stringify(data));
     } catch (e) {
-      console.error("AuthProvider: /me failed", e);
-      setUser(null);
-      sessionStorage.removeItem(TOKEN_KEY);
-      setToken(null);
+      console.warn("AuthProvider: /me failed, falling back to cached user", e);
+      const cached = localStorage.getItem(USER_KEY);
+      if (cached) {
+        setUser(JSON.parse(cached));
+      } else {
+        setUser(null);
+        sessionStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -101,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     const unsubLogout = authEvents.on("logout", () => {
       sessionStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
       setToken(null);
       setUser(null);
     });
