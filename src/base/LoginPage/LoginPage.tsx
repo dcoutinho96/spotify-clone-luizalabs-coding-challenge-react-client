@@ -9,7 +9,7 @@ export function LoginPage() {
   const called = useRef(false);
 
   useEffect(() => {
-    if (called.current) return;   
+    if (called.current) return;
     called.current = true;
 
     const url = new URL(window.location.href);
@@ -17,20 +17,17 @@ export function LoginPage() {
     const state = url.searchParams.get("state");
 
     if (!code || !state) {
-      navigate(ROUTES.home);      
+      navigate(ROUTES.home);
       return;
     }
 
     (async () => {
-      let data: Awaited<ReturnType<typeof handleSpotifyCallback>> | null = null;
       try {
-        data = await handleSpotifyCallback();
-      } finally {
-        if (!data?.access_token) {
-          navigate(ROUTES.home);        
-        } else {
-          navigate(ROUTES.dashboard);   
-        }
+        await handleSpotifyCallback();
+        navigate(ROUTES.dashboard);
+        
+      } catch (_err) {
+        navigate(ROUTES.home);
       }
     })();
   }, [navigate]);

@@ -1,7 +1,6 @@
 import { motion, useAnimationControls } from "framer-motion";
 import { useEffect } from "react";
 
-const BARS = 3;
 const BAR_WIDTH = 6;
 const BAR_GAP = 10;
 const BAR_RADIUS = 2;
@@ -52,7 +51,7 @@ function Bar({ id, index }: BarProps) {
 }
 
 export function LoadingSpinner() {
-  const barIds = ["bar-a", "bar-b", "bar-c"]; // stable keys
+  const barIds = ["bar-a", "bar-b", "bar-c"]; 
 
   return (
     <output

@@ -44,8 +44,8 @@ export default defineConfig(({ mode }) => {
         includeAssets: ["assets/favicon.ico", "apple-touch-icon.png"],
         manifest: {
           id: "/",
-          name: "Spotify Clone – Luizalabs Challenge",
-          short_name: "Spotify Clone",
+          name: "Spotify Clone",
+          short_name: "Spotify",
           start_url: "/",
           scope: "/",
           display: "standalone",

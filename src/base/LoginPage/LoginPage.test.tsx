@@ -121,30 +121,22 @@ describe("LoginPage", () => {
   });
 
   it("navigates home if handleSpotifyCallback throws an error", async () => {
-  
-  const error = new Error("Failed");
-  (handleSpotifyCallback as unknown as Mock).mockImplementationOnce(() => Promise.reject(error));
-  const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-  Object.defineProperty(window, "location", {
-    value: { href: "https://localhost:5173/login?code=123&state=abc" },
-    writable: true,
-    configurable: true,
+    (handleSpotifyCallback as unknown as Mock).mockRejectedValueOnce(new Error("Failed"));
+    Object.defineProperty(window, "location", {
+      value: { href: "https://localhost:5173/login?code=123&state=abc" },
+      writable: true,
+      configurable: true,
+    });
+    render(
+      <BrowserRouter>
+        <LoginPage />
+      </BrowserRouter>
+    );
+    await waitFor(() => {
+      expect(handleSpotifyCallback).toHaveBeenCalled();
+      expect(navigateMock).toHaveBeenCalledWith(ROUTES.home);
+    });
   });
-
-  render(
-    <BrowserRouter>
-      <LoginPage />
-    </BrowserRouter>
-  );
-  
-  await waitFor(() => {
-    expect(handleSpotifyCallback).toHaveBeenCalled();
-    expect(navigateMock).toHaveBeenCalledWith(ROUTES.home);
-  });
-
-  consoleErrorSpy.mockRestore();
-});
 
   it("prevents multiple executions on re-render", async () => {
     Object.defineProperty(window, "location", {
