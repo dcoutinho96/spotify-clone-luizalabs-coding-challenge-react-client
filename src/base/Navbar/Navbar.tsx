@@ -13,7 +13,7 @@ export function Navbar() {
     <aside
       data-testid="navbar"
       className="
-        bg-black text-primary
+        bg-background-alt text-primary
         fixed bottom-0 left-0 right-0 h-16
         flex items-center justify-around
         px-4

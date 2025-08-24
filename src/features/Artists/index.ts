@@ -1,2 +1,3 @@
 export * from './ArtistsPage'
-export * from './ArtistAlbumPage'
+export * from './ArtistAlbumsPage'
+export * from './useInfiniteMyTopArtists'

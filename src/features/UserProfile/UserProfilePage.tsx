@@ -7,7 +7,7 @@ export const UserProfilePage = () => {
   const { data, isLoading } = useMeQuery();
 
   if (isLoading) {
-    return <LoadingSpinner data-testid="loading" />;
+    return <LoadingSpinner/>;
   }
   const {
     me: { images = [], displayName },

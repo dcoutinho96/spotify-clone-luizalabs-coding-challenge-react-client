@@ -81,19 +81,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await fetch("https://api.spotify.com/v1/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Spotify /me failed: ${res.status}`);
+
+      if (!res.ok) {
+        
+        if (res.status === 401 || res.status === 403) {
+          console.warn("AuthProvider: token invalid, logging out");
+          authEvents.emit("logout", undefined);
+          return;
+        }
+        throw new Error(`Spotify /me failed: ${res.status}`);
+      }
+
       const data: User = await res.json();
       setUser(data);
       localStorage.setItem(USER_KEY, JSON.stringify(data));
     } catch (e) {
-      console.warn("AuthProvider: /me failed, falling back to cached user", e);
-      const cached = localStorage.getItem(USER_KEY);
-      if (cached) {
-        setUser(JSON.parse(cached));
+      if (!navigator.onLine) {
+        
+        console.warn("AuthProvider: offline, using cached user");
+        const cached = localStorage.getItem(USER_KEY);
+        if (cached) {
+          setUser(JSON.parse(cached));
+        }
       } else {
-        setUser(null);
-        sessionStorage.removeItem(TOKEN_KEY);
-        setToken(null);
+        
+        console.warn("AuthProvider: /me failed, logging out", e);
+        authEvents.emit("logout", undefined);
       }
     } finally {
       setLoading(false);
@@ -120,6 +133,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       unsubLogout();
     };
   }, []);
+  
+  useEffect(() => {
+    const handleOnline = () => {
+      if (token) {
+        fetchMe();
+      }
+    };
+    window.addEventListener("online", handleOnline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+    };
+  }, [token, fetchMe]);
 
   const logout = useCallback(() => {
     authEvents.emit("logout", undefined);

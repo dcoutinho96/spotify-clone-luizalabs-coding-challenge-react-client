@@ -26,10 +26,10 @@ describe("NavItem", () => {
     const link = screen.getByRole("link");
     const icon = link.querySelector("svg");
     
-    expect(screen.getByText("Home")).toHaveClass("text-text-secondary");
+    expect(screen.getByText("Home")).toHaveClass("text-secondary");
     expect(screen.getByText("Home")).not.toHaveClass("font-bold");
     
-    expect(icon).toHaveClass("text-text-secondary");
+    expect(icon).toHaveClass("text-secondary");
     
     expect(link).not.toHaveAttribute("data-current");
   });
@@ -44,10 +44,10 @@ describe("NavItem", () => {
     const link = screen.getByRole("link");
     const icon = link.querySelector("svg");
     
-    expect(screen.getByText("Home")).toHaveClass("text-text-primary");
+    expect(screen.getByText("Home")).toHaveClass("text-primary");
     expect(screen.getByText("Home")).toHaveClass("font-bold");
     
-    expect(icon).toHaveClass("text-text-primary");
+    expect(icon).toHaveClass("text-primary");
     
     expect(link).toHaveAttribute("data-current", "true");
   });

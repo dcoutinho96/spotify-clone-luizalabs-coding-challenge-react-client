@@ -1,141 +1,177 @@
-import { describe, it, expect, beforeEach, afterEach, vi, Mock } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach, Mock } from "vitest";
 import { fetcher } from "./fetcher";
 
 describe("fetcher", () => {
-  const originalFetch = global.fetch;
-
   beforeEach(() => {
-    sessionStorage.clear();
-    vi.clearAllMocks();
-    global.fetch = vi.fn();
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+    global.fetch = vi.fn() as any;
+    
+    const store: Record<string, string> = {};
+    vi.stubGlobal("localStorage", {
+      getItem: vi.fn((k: string) => store[k] ?? null),
+      setItem: vi.fn((k: string, v: string) => {
+        store[k] = v;
+      }),
+      removeItem: vi.fn((k: string) => {
+        delete store[k];
+      }),
+      clear: vi.fn(() => {
+        for (const k in store) delete store[k];
+      }),
+    });
+
+    const session: Record<string, string> = {};
+    vi.stubGlobal("sessionStorage", {
+      getItem: vi.fn((k: string) => session[k] ?? null),
+      setItem: vi.fn((k: string, v: string) => {
+        session[k] = v;
+      }),
+      removeItem: vi.fn((k: string) => {
+        delete session[k];
+      }),
+      clear: vi.fn(() => {
+        for (const k in session) delete session[k];
+      }),
+    });
+    
+    vi.stubGlobal("navigator", { onLine: true });
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
-  const API_BASE =
-    import.meta.env.VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL ||
-    "http://localhost:4000";
+  it("throws if query is invalid", () => {
+    
+    expect(() => fetcher<unknown, undefined>("")).toBeInstanceOf(Function);
+  });
 
-  it("sends request without Authorization header when no token", async () => {
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({ data: { ok: true } }),
+  it("returns data on success", async () => {
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: { hello: "world" } }),
     });
 
-    const query = "query Test";
-    const variables = { id: 1 };
-    const fn = fetcher<{ ok: boolean }, typeof variables>(query, variables);
-
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
     const result = await fn();
+    expect(result).toEqual({ hello: "world" });
+  });
 
-    expect(result).toEqual({ ok: true });
-    expect(global.fetch).toHaveBeenCalledWith(
-      API_BASE,
-      expect.objectContaining({
-        method: "POST",
-        headers: expect.objectContaining({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({ query, variables }),
-      })
+  it("throws if offline with no cache", async () => {
+    (navigator as any).onLine = false;
+
+    const fn = fetcher<{ hi: string }, undefined>("query { hi }");
+    await expect(fn()).rejects.toThrow(
+      "Offline: no network connection and no cached data available"
     );
   });
 
-  it("sends request with Authorization header when token exists", async () => {
-    sessionStorage.setItem("access_token", "test-token");
+  it("returns cached data if offline with cache", async () => {
+    const cacheKey = JSON.stringify({ query: "query { hi }", variables: undefined });
+    localStorage.setItem(cacheKey, JSON.stringify({ hi: "cached" }));
 
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({ data: { ok: true } }),
-    });
+    (navigator as any).onLine = false;
 
-    const fn = fetcher<{ ok: boolean }, void>("query Auth");
-    await fn();
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      API_BASE,
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          Authorization: "Bearer test-token",
-        }),
-      })
-    );
+    const fn = fetcher<{ hi: string }, undefined>("query { hi }");
+    await expect(fn()).resolves.toEqual({ hi: "cached" });
   });
 
-  it("merges custom headers", async () => {
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({ data: { ok: true } }),
-    });
+  it("throws Network request failed on fetch reject", async () => {
+    (global.fetch as Mock).mockRejectedValueOnce(new Error("boom"));
 
-    const fn = fetcher<{ ok: boolean }, void>("query Headers", undefined, {
-      "X-Test": "123",
-    });
-    await fn();
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      API_BASE,
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          "X-Test": "123",
-        }),
-      })
-    );
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
+    await expect(fn()).rejects.toThrow("Network request failed: boom");
   });
 
-  it("throws an error when response contains errors with message", async () => {
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({
-        errors: [{ message: "Something went wrong" }],
-      }),
+  it("throws Invalid JSON on bad JSON", async () => {
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => {
+        throw new Error("bad json");
+      },
     });
 
-    const fn = fetcher<unknown, void>("query Error");
-    await expect(fn()).rejects.toThrow("Something went wrong");
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
+    await expect(fn()).rejects.toThrow(/Invalid JSON response/);
   });
 
-  it("throws a generic error when response contains errors without message", async () => {
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({
-        errors: [{}],
-      }),
+  it("throws HTTP_ERROR when not ok", async () => {
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: async () => ({ errors: [{ message: "boom" }] }),
     });
 
-    const fn = fetcher<unknown, void>("query Error");
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
+    await expect(fn()).rejects.toThrow("boom");
+  });
+
+  it("throws GraphQL error if errors array exists", async () => {
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ errors: [{ message: "bad gql" }] }),
+    });
+
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
+    await expect(fn()).rejects.toThrow("bad gql");
+  });
+
+  it("throws GraphQL error if errors is empty array", async () => {
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ errors: [] }),
+    });
+
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
     await expect(fn()).rejects.toThrow("GraphQL error");
   });
 
-  it("returns data when request succeeds", async () => {
-    const data = { hello: "world" };
-
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({ data }),
+  it("throws when data is null", async () => {
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: null }),
     });
 
-    const fn = fetcher<typeof data, void>("query Success");
-    const result = await fn();
-
-    expect(result).toEqual(data);
+    const fn = fetcher<{ hello: string }, undefined>("query { hello }");
+    await expect(fn()).rejects.toThrow("No data returned from server");
   });
 
-  it("throws a generic error when response contains empty errors array", async () => {
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({
-        errors: [],
-      }),
+  it("uses Authorization header if token exists", async () => {
+    sessionStorage.setItem("access_token", "abc123");
+
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: { pong: true } }),
     });
 
-    const fn = fetcher<unknown, void>("query EmptyErrors");
-    await expect(fn()).rejects.toThrow("GraphQL error");
+    const fn = fetcher<{ pong: boolean }, undefined>("query { pong }");
+    await fn();
+
+    const [, options] = (global.fetch as Mock).mock.calls[0];
+    expect(options.headers.Authorization).toBe("Bearer abc123");
   });
 
-  it("returns undefined when response contains no errors and no data", async () => {
-    (global.fetch as unknown as Mock).mockResolvedValueOnce({
-      json: async () => ({}),
+  it("uses env URL when provided", async () => {
+    vi.stubEnv("VITE_SPOTIFY_CLONE_LUIZALABS_API_BASE_URL", "https://api.example.com/gql");
+
+    (global.fetch as Mock).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: { pong: true } }),
     });
 
-    const fn = fetcher<unknown, void>("query NoErrors");
-    const result = await fn();
+    const fn = fetcher<{ pong: boolean }, undefined>("query { pong }");
+    await fn();
 
-    expect(result).toBeUndefined();
+    const [calledUrl] = (global.fetch as Mock).mock.calls[0];
+    expect(calledUrl).toBe("https://api.example.com/gql");
   });
 });

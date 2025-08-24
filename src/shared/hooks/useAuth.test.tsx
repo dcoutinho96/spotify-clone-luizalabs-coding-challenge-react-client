@@ -21,7 +21,7 @@ describe("AuthProvider + useAuth", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     sessionStorage.clear();
-    localStorage.clear(); 
+    localStorage.clear();
     global.fetch = vi.fn();
   });
 
@@ -64,7 +64,7 @@ describe("AuthProvider + useAuth", () => {
     expect(screen.getByTestId("isAuth").textContent).toBe("true");
   });
 
-  it("clears token if /me fails and no cached user", async () => {
+  it("logs out if /me returns 401 and no cached user", async () => {
     sessionStorage.setItem("access_token", "badtoken");
     (global.fetch as any).mockResolvedValue({ ok: false, status: 401 });
 
@@ -81,14 +81,18 @@ describe("AuthProvider + useAuth", () => {
     expect(screen.getByTestId("isAuth").textContent).toBe("false");
   });
 
-  it("falls back to cached user if /me fails and cached user exists", async () => {
+  it("uses cached user when offline and request fails", async () => {
     localStorage.setItem(
       "auth_user",
       JSON.stringify({ id: "c1", display_name: "Cached" })
     );
-    sessionStorage.setItem("access_token", "badtoken");
-
-    (global.fetch as any).mockResolvedValue({ ok: false, status: 401 });
+    sessionStorage.setItem("access_token", "sometoken");
+    
+    (global.fetch as any).mockRejectedValue(new TypeError("Failed to fetch"));
+    Object.defineProperty(window.navigator, "onLine", {
+      value: false,
+      configurable: true,
+    });
 
     render(
       <AuthProvider>
@@ -99,7 +103,7 @@ describe("AuthProvider + useAuth", () => {
     await waitFor(() =>
       expect(screen.getByTestId("user").textContent).toBe("Cached")
     );
-    expect(screen.getByTestId("token").textContent).toBe("badtoken");
+    expect(screen.getByTestId("token").textContent).toBe("sometoken");
     expect(screen.getByTestId("isAuth").textContent).toBe("true");
   });
 

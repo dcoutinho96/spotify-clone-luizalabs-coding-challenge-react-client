@@ -3,11 +3,11 @@ import { describe, it, expect } from "vitest";
 import { Text } from "./Text";
 
 describe("Text (accessible)", () => {
-  it("renders as a paragraph by default", () => {
+  it("renders as a paragraph by default with primary text color", () => {
     render(<Text>Default text</Text>);
     const el = screen.getByText("Default text");
     expect(el.tagName.toLowerCase()).toBe("p");
-    expect(el).toHaveClass("text-[color:var(--color-text-primary)]");
+    expect(el).toHaveClass("text-primary");
   });
 
   it("renders with custom semantic elements", () => {
@@ -22,9 +22,9 @@ describe("Text (accessible)", () => {
   });
 
   it("applies custom color and className", () => {
-    render(<Text color="red" className="extra">Styled</Text>);
+    render(<Text color="secondary" className="extra">Styled</Text>);
     const el = screen.getByText("Styled");
-    expect(el).toHaveClass("text-[color:red]");
+    expect(el).toHaveClass("text-secondary");
     expect(el).toHaveClass("extra");
   });
 

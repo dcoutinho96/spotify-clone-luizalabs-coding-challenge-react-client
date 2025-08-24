@@ -12,12 +12,12 @@ interface NavItemProps {
 export function NavItem({ to, icon: Icon, label, current }: NavItemProps) {
   const baseClasses = "flex items-center md:gap-4 rounded-md transition-colors";
 
-  const activeClasses = "text-text-primary font-bold";
-  const inactiveClasses = "text-text-secondary hover:text-text-primary";
+  const activeClasses = "text-primary font-bold";
+  const inactiveClasses = "text-secondary hover:text-primary";
 
   const iconColorClass = current
-    ? "text-text-primary"
-    : "text-text-secondary group-hover:text-text-primary";
+    ? "text-primary"
+    : "text-secondary group-hover:text-primary";
 
   return (
     <NavLink

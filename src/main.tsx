@@ -16,6 +16,11 @@ const queryClient = new QueryClient({
       staleTime: 60_000,
       gcTime: 24 * 60 * 60 * 1000,
       retry: 0,
+      networkMode: "offlineFirst",
+      throwOnError: (_error, query) => {
+        
+        return !query.state.data;
+      },
     },
   },
 });
@@ -28,19 +33,30 @@ const persister = createAsyncStoragePersister({
   deserialize: (cached) => JSON.parse(cached),
 });
 
+type PersistOptionsType = NonNullable<
+  Parameters<typeof PersistQueryClientProvider>[0]["persistOptions"]
+>;
+
+const persistOptions: PersistOptionsType = {
+  persister,
+};
+
 if (
   typeof window !== "undefined" &&
   "serviceWorker" in navigator &&
   import.meta.env.MODE !== "test"
 ) {
-  import("virtual:pwa-register").then(({ registerSW }) => {
-    registerSW({ immediate: true });
-  });
+  import("virtual:pwa-register").then(
+    (mod: typeof import("virtual:pwa-register")) => {
+      const { registerSW } = mod;
+      registerSW({ immediate: true });
+    }
+  );
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
       <App />
     </PersistQueryClientProvider>
   </React.StrictMode>

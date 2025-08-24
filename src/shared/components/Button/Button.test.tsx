@@ -37,7 +37,7 @@ describe("Button (accessible)", () => {
     expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("bg-brand");
     expect(screen.getByRole("button", { name: "Secondary" })).toHaveClass("bg-surface-3");
     expect(screen.getByRole("button", { name: "Outline" })).toHaveClass("border");
-    expect(screen.getByRole("button", { name: "Ghost" })).toHaveClass("text-text-secondary");
+    expect(screen.getByRole("button", { name: "Ghost" })).toHaveClass("text-secondary");
   });
 
   it("handles disabled state with aria-disabled", () => {

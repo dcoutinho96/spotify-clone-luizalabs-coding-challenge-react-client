@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { ROUTES } from "~/config";
 
@@ -63,7 +63,7 @@ vi.mock("react", async () => {
 
 const { Layout } = await import("./Layout");
 
-describe("Layout routing with isAuth", () => {
+describe("Layout routing with isAuth + scroll restoration", () => {
   beforeEach(() => {
     mockAuthState = { loading: false, isAuth: false, token: null };
   });
@@ -127,4 +127,20 @@ describe("Layout routing with isAuth", () => {
     expect(screen.queryByText("LOGIN PAGE")).not.toBeInTheDocument();
     expect(screen.queryByText("MOCK DASHBOARD PAGE")).not.toBeInTheDocument();
   });
+
+  it("saves and restores scroll position across routes", async () => {
+    renderAt(ROUTES.home);
+    const main = screen.getByTestId("layout").querySelector("main")!;
+
+    Object.defineProperty(main, "scrollTop", { value: 120, writable: true });
+    act(() => {
+      main.dispatchEvent(new Event("scroll"));
+    });
+
+    renderAt(ROUTES.dashboard);
+    renderAt(ROUTES.home);
+
+    expect(HTMLElement.prototype.scrollTo).toHaveBeenCalled();
+  });
+
 });
