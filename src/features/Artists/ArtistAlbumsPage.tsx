@@ -2,37 +2,50 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useArtistByIdQuery } from "~/gql";
 
-import { BackButton, Image, LoadingSpinner, Text, useInfiniteScroll } from "~/shared";
+import {
+  BackButton,
+  Image,
+  LoadingSpinner,
+  Text,
+  useInfiniteScroll,
+} from "~/shared";
 import { useInfiniteArtistAlbums } from "./useInfiniteArtistAlbums";
 
 export const ArtistAlbumsPage = () => {
   const { t } = useTranslation();
-  const { artistId } = useParams<{ artistId: string }>();
-  
+  const params = useParams<{ artistId: string }>();
+  const artistId = params.artistId;
+
+  if (!artistId) {
+    return <div>{t("artist.notFound")}</div>;
+  }
+
   const { data: artistData, isLoading: artistLoading } = useArtistByIdQuery({
-    id: artistId!,
+    id: artistId,
   });
-  
+
   const {
     data: albumsData,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteArtistAlbums(artistId!, 10);
+  } = useInfiniteArtistAlbums(artistId, 10);
 
   const sentinelRef = useInfiniteScroll<HTMLDivElement>({
     hasMore: !!hasNextPage,
     isLoading: isFetchingNextPage,
-    onLoadMore: () => fetchNextPage(),
+    onLoadMore: () => {
+      void fetchNextPage();
+    },
   });
-  
+
   const albumEdges =
     albumsData?.pages.flatMap((page) => page.artistAlbums.edges) ?? [];
-  
+
   if (artistLoading) {
     return <LoadingSpinner data-testid="loading" />;
   }
-  
+
   if (!artistData?.artistById) {
     return <div>{t("artist.notFound")}</div>;
   }
@@ -43,7 +56,6 @@ export const ArtistAlbumsPage = () => {
 
   return (
     <div className="w-full px-8 grid gap-4">
-      {}
       <div className="flex justify-between items-center py-8">
         <BackButton>{name}</BackButton>
         <div>
@@ -57,7 +69,6 @@ export const ArtistAlbumsPage = () => {
         </div>
       </div>
 
-      {}
       <div className="grid gap-4 mb-8">
         {albumEdges.map(({ node }) => {
           const { id, name, releaseDate, images } = node;
@@ -78,6 +89,7 @@ export const ArtistAlbumsPage = () => {
           );
         })}
       </div>
+
       <div ref={sentinelRef} className="h-8" />
     </div>
   );

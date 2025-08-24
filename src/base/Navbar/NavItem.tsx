@@ -2,12 +2,12 @@ import { NavLink } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import { Text } from "~/shared";
 
-interface NavItemProps {
+type NavItemProps = Readonly<{
   to: string;
   icon: LucideIcon;
   label: string;
   current?: boolean;
-}
+}>;
 
 export function NavItem({ to, icon: Icon, label, current }: NavItemProps) {
   const baseClasses = "flex items-center md:gap-4 rounded-md transition-colors";

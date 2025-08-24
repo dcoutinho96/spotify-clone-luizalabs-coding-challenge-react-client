@@ -17,9 +17,11 @@ export const ArtistsPage = () => {
   const sentinelRef = useInfiniteScroll<HTMLDivElement>({
     hasMore: !!hasNextPage,
     isLoading: isFetchingNextPage,
-    onLoadMore: () => fetchNextPage(),
+    onLoadMore: () => {
+      void fetchNextPage();
+    },
   });
-  
+
   const edges = data?.pages.flatMap((page) => page.myTopArtists.edges) ?? [];
 
   if (isLoading && edges.length === 0) {

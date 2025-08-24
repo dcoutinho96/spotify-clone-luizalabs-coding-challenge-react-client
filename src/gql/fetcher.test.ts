@@ -44,7 +44,6 @@ describe("fetcher", () => {
   });
 
   it("throws if query is invalid", () => {
-    
     expect(() => fetcher<unknown, undefined>("")).toBeInstanceOf(Function);
   });
 
@@ -121,7 +120,7 @@ describe("fetcher", () => {
     await expect(fn()).rejects.toThrow("bad gql");
   });
 
-  it("throws GraphQL error if errors is empty array", async () => {
+  it("throws No data returned if errors is empty array", async () => {
     (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
       status: 200,
@@ -129,7 +128,7 @@ describe("fetcher", () => {
     });
 
     const fn = fetcher<{ hello: string }, undefined>("query { hello }");
-    await expect(fn()).rejects.toThrow("GraphQL error");
+    await expect(fn()).rejects.toThrow("No data returned from server");
   });
 
   it("throws when data is null", async () => {

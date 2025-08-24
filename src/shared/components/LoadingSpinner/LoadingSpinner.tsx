@@ -10,7 +10,12 @@ const MAX_HEIGHT = 36;
 const DURATION = 0.9;
 const STAGGER = 0.15;
 
-function Bar({ index }: { index: number }) {
+interface BarProps {
+  readonly id: string;
+  readonly index: number;
+}
+
+function Bar({ id, index }: BarProps) {
   const controls = useAnimationControls();
 
   useEffect(() => {
@@ -33,6 +38,7 @@ function Bar({ index }: { index: number }) {
 
   return (
     <motion.div
+      key={id}
       animate={controls}
       style={{
         height: MIN_HEIGHT,
@@ -46,14 +52,16 @@ function Bar({ index }: { index: number }) {
 }
 
 export function LoadingSpinner() {
+  const barIds = ["bar-a", "bar-b", "bar-c"]; // stable keys
+
   return (
     <output
       data-testid="loading"
       aria-label="Loading"
       className="inline-flex items-end h-[48px]"
     >
-      {Array.from({ length: BARS }).map((_, i) => (
-        <Bar key={i} index={i} />
+      {barIds.map((id, i) => (
+        <Bar key={id} id={id} index={i} />
       ))}
     </output>
   );

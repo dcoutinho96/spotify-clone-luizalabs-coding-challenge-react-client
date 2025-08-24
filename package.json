@@ -19,7 +19,9 @@
     "test:e2e": "playwright test",
     "pretest:e2e:ci": "npm run build",
     "test:e2e:ci": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "sonar": "sonar-scanner",
+    "sonar:local": "dotenv -e .env -- npm run sonar"
   },
   "dependencies": {
     "@dcoutinho96/spotify-clone-luizalabs-coding-challenge-graphql-schema": "^1.1.0",
@@ -58,6 +60,7 @@
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "dotenv": "^17.2.1",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-no-comments": "^1.1.10",
     "eslint-plugin-react-hooks": "^5.2.0",
