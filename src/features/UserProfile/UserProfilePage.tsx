@@ -1,19 +1,28 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import { useMeQuery } from "~/gql";
-import { Button, Image, LoadingSpinner, Text } from "~/shared";
+import { Button, Image, LoadingSpinner, Text, useAuth } from "~/shared";
+import { ROUTES } from "~/config";
 
 export const UserProfilePage = () => {
   const { t } = useTranslation();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const { data, isLoading } = useMeQuery();
 
   if (isLoading) {
-    return <LoadingSpinner/>;
+    return <LoadingSpinner />;
   }
   const {
     me: { images = [], displayName },
   } = data!;
 
   const [{ url } = { url: "/assets/placeholder-avatar.png" }] = images;
+
+  const handleSignOut = () => {
+    logout();
+    navigate(ROUTES.home);
+  };
 
   return (
     <div className="flex flex-col items-center gap-6">
@@ -25,7 +34,12 @@ export const UserProfilePage = () => {
       <Text className="text-2xl font-medium tracking-[0.01em]">
         {displayName}
       </Text>
-      <Button className="m-3">{t("profile.sign-out-button")}</Button>
+      <Button
+        variant="primary"
+        onClick={handleSignOut}
+      >
+        {t("profile.sign-out-button")}
+      </Button>
     </div>
   );
 };

@@ -20,5 +20,16 @@
   "artist": {
     "title": "Top Artistas",
     "subtitle": "Aqui você encontra seus artistas preferidos"
+  },
+  "errors": {
+    "404": {
+      "title": "Página não encontrada",
+      "message": "A página que você está procurando não existe ou foi movida."
+    },
+    "500": {
+      "title": "Erro do servidor",
+      "message": "Algo deu errado no nosso lado. Por favor, tente novamente mais tarde."
+    },
+    "backHome": "Voltar ao início"
   }
 }

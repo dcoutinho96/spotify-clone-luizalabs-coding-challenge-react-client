@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
 import { UserProfilePage } from "./UserProfilePage";
 
 vi.mock("react-i18next", () => ({
@@ -13,6 +14,27 @@ vi.mock("react-i18next", () => ({
     },
   }),
 }));
+
+const mockLogout = vi.fn();
+const mockNavigate = vi.fn();
+
+vi.mock("~/shared", async () => {
+  const actual = await vi.importActual("~/shared");
+  return {
+    ...actual,
+    useAuth: () => ({
+      logout: mockLogout,
+    }),
+  };
+});
+
+vi.mock("react-router", async () => {
+  const actual = await vi.importActual("react-router");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 type MeImage = { url: string };
 type Me = {
@@ -53,7 +75,11 @@ describe("UserProfilePage", () => {
   it("shows loading spinner when isLoading is true", () => {
     (useMeQuery as unknown as Mock).mockReturnValue(makeResult<MeQuery>(undefined, true));
 
-    render(<UserProfilePage />);
+    render(
+      <MemoryRouter>
+        <UserProfilePage />
+      </MemoryRouter>
+    );
 
     expect(screen.getByTestId("loading")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Sign out" })).not.toBeInTheDocument();
@@ -71,7 +97,11 @@ describe("UserProfilePage", () => {
       })
     );
 
-    render(<UserProfilePage />);
+    render(
+      <MemoryRouter>
+        <UserProfilePage />
+      </MemoryRouter>
+    );
     
     expect(screen.getByText("Alice Cooper")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
@@ -98,10 +128,39 @@ describe("UserProfilePage", () => {
       })
     );
 
-    render(<UserProfilePage />);
+    render(
+      <MemoryRouter>
+        <UserProfilePage />
+      </MemoryRouter>
+    );
 
     const img = screen.getByRole("img", { name: "Profile picture" }) as HTMLImageElement;
     expect(img).toHaveAttribute("src", "/assets/placeholder-avatar.png");
     expect(screen.getByText("No Pic")).toBeInTheDocument();
+  });
+
+  it("calls logout and navigates to home when sign out button is clicked", () => {
+    (useMeQuery as unknown as Mock).mockReturnValue(
+      makeResult<MeQuery>({
+        me: {
+          __typename: "User",
+          id: "1",
+          displayName: "Alice Cooper",
+          images: [{ url: "https://example.com/alice.jpg" }],
+        },
+      })
+    );
+
+    render(
+      <MemoryRouter>
+        <UserProfilePage />
+      </MemoryRouter>
+    );
+
+    const signOutButton = screen.getByRole("button", { name: "Sign out" });
+    fireEvent.click(signOutButton);
+
+    expect(mockLogout).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 });

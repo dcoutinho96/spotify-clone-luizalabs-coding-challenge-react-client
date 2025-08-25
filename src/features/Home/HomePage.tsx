@@ -1,9 +1,26 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { loginWithSpotify } from "~/auth";
-import { Button, Image, Text, Container } from "~/shared";
+import { Button, Image, Text, Container, useAuth } from "~/shared";
+import { ROUTES } from "~/config";
 
 export function HomePage() {
   const { t } = useTranslation();
+  const { isAuth, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redirect to dashboard if user is authenticated
+    if (isAuth && !loading) {
+      navigate(ROUTES.dashboard);
+    }
+  }, [isAuth, loading, navigate]);
+
+  // Don't render anything while checking auth status or if redirecting
+  if (loading || isAuth) {
+    return null;
+  }
 
   return (
     <Container className="min-h-screen grid place-items-center px-4">

@@ -4,6 +4,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import ptBR from './translations/pt-BR.json'
 import en from './translations/en.json'
+import es from './translations/es.json'
 
 i18n
   .use(LanguageDetector)
@@ -11,7 +12,8 @@ i18n
   .init({
     resources: {
       pt: { translation: ptBR },
-      en: { translation: en }
+      en: { translation: en },
+      es: { translation: es }
     },
     fallbackLng: "pt",
     interpolation: { escapeValue: false },

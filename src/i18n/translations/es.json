@@ -1,0 +1,35 @@
+{
+  "accessibility": {
+    "spotify-logo": "Logo de Spotify"
+  },
+  "home": {
+    "login-instructions": "Inicia sesión con tu cuenta de Spotify haciendo clic en el botón de abajo",
+    "login-button": "Iniciar Sesión"
+  },
+  "profile": {
+    "sign-out-button": "Cerrar Sesión",
+    "alt-profile-picture": "Foto de perfil"
+  },
+  "navbar": {
+    "home": "Inicio",
+    "artists": "Artistas",
+    "albums": "Álbumes",
+    "playlists": "Playlists",
+    "profile": "Perfil"
+  },
+  "artist": {
+    "title": "Mejores Artistas",
+    "subtitle": "Aquí encontrarás tus artistas favoritos"
+  },
+  "errors": {
+    "404": {
+      "title": "Página no encontrada",
+      "message": "La página que buscas no existe o ha sido movida."
+    },
+    "500": {
+      "title": "Error del servidor",
+      "message": "Algo salió mal en nuestro lado. Por favor, inténtalo de nuevo más tarde."
+    },
+    "backHome": "Volver al inicio"
+  }
+}
