@@ -25,8 +25,9 @@ export function LoginPage() {
       try {
         await handleSpotifyCallback();
         navigate(ROUTES.dashboard);
-        
-      } catch (_err) {
+
+      } catch (error) {
+        console.error("Failed to handle Spotify callback:", error);
         navigate(ROUTES.home);
       }
     })();

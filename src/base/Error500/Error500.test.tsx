@@ -3,7 +3,6 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi } from "vitest";
 import { Error500 } from "./Error500";
 
-// Mock the ErrorComponent
 vi.mock("~/shared", () => ({
   ErrorComponent: ({ icon: Icon, iconColor, titleKey, messageKey }: any) => (
     <div data-testid="error-component">

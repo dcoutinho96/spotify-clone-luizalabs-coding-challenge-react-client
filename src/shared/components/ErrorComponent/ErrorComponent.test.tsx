@@ -1,10 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { SearchX, ServerCrash } from "lucide-react";
 import { ErrorComponent } from "./ErrorComponent";
 
-// Mock react-i18next
 vi.mock("react-i18next", () => ({
     useTranslation: () => ({
         t: (key: string) => key,
@@ -13,7 +12,7 @@ vi.mock("react-i18next", () => ({
 
 describe("ErrorComponent", () => {
     beforeEach(() => {
-        // Reset any previous mocks
+
         vi.restoreAllMocks();
     });
 
@@ -65,7 +64,7 @@ describe("ErrorComponent", () => {
     });
 
     it("calls window.location.href when button is clicked", () => {
-        // Create a spy for window.location.href
+
         const originalLocation = window.location;
         const mockHref = vi.fn();
 
@@ -87,8 +86,6 @@ describe("ErrorComponent", () => {
 
         const button = screen.getByRole("button", { name: "errors.backHome" });
 
-        // Since we can't easily test window.location.href assignment in tests,
-        // we'll just verify the button exists and is clickable
         expect(button).toBeInTheDocument();
         expect(button).toBeEnabled();
     });
@@ -150,7 +147,7 @@ describe("ErrorComponent", () => {
         );
 
         const button = screen.getByRole("button", { name: "errors.backHome" });
-        // Now using the shared Button component, expect its styling classes
+
         expect(button).toHaveClass("rounded-full", "transition", "px-10", "py-[0.6875rem]", "text-[1rem]", "leading-[1.25rem]", "font-bold", "cursor-pointer", "tracking-[0.00875rem]", "h-[3.625rem]", "bg-brand", "text-inverse", "hover:brightness-110");
     });
 });

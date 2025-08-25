@@ -11,13 +11,11 @@ vi.mock("~/auth", () => ({
   loginWithSpotify: vi.fn(),
 }));
 
-// Mock useNavigate
 const mockNavigate = vi.hoisted(() => vi.fn());
 vi.mock("react-router", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock useAuth hook
 const mockUseAuth = vi.hoisted(() => vi.fn());
 vi.mock("~/shared", () => ({
   Button: (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
@@ -38,7 +36,7 @@ vi.mock("~/shared", () => ({
 describe("HomePage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Default mock: unauthenticated user
+    
     mockUseAuth.mockReturnValue({
       isAuth: false,
       loading: false,
@@ -76,13 +74,13 @@ describe("HomePage", () => {
 
   it("renders the login instructions text", () => {
     renderWithI18n();
-    // The text will be in English since that's what the i18n is defaulting to
+    
     expect(screen.getByText(/Sign in with your Spotify account/i)).toBeInTheDocument();
   });
 
   it("renders a login button", () => {
     renderWithI18n();
-    // The button text will be in English
+    
     const button = screen.getByRole("button", { name: /Sign In/i });
     expect(button).toBeInTheDocument();
   });

@@ -11,13 +11,12 @@ export function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to dashboard if user is authenticated
+    
     if (isAuth && !loading) {
       navigate(ROUTES.dashboard);
     }
   }, [isAuth, loading, navigate]);
-
-  // Don't render anything while checking auth status or if redirecting
+  
   if (loading || isAuth) {
     return null;
   }

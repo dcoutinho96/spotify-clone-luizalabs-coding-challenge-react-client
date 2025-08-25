@@ -1,35 +1,35 @@
 {
-  "accessibility": {
-    "spotify-logo": "Spotify Logo"
-  },
-  "home": {
-    "login-instructions": "Sign in with your Spotify account by clicking the button below",
-    "login-button": "Sign In"
-  },
-  "profile": {
-    "sign-out-button": "Sign Out",
-    "alt-profile-picture": "Profile Picture"
-  },
-  "navbar": {
-    "home": "Home",
-    "artists": "Artists",
-    "albums": "Albums",
-    "playlists": "Playlists",
-    "profile": "Profile"
-  },
-  "artist": {
-    "title": "Top Artists",
-    "subtitle": "Here you'll find your favorite artists"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist or has been moved."
+    "accessibility": {
+        "spotify-logo": "Spotify Logo"
     },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end. Please try again later."
+    "home": {
+        "login-instructions": "Sign in with your Spotify account by clicking the button below",
+        "login-button": "Sign In"
     },
-    "backHome": "Back to Home"
-  }
+    "profile": {
+        "sign-out-button": "Sign Out",
+        "alt-profile-picture": "Profile Picture"
+    },
+    "navbar": {
+        "home": "Home",
+        "artists": "Artists",
+        "albums": "Albums",
+        "playlists": "Playlists",
+        "profile": "Profile"
+    },
+    "artist": {
+        "title": "Top Artists",
+        "subtitle": "Here you'll find your favorite artists"
+    },
+    "errors": {
+        "404": {
+            "title": "Page Not Found",
+            "message": "The page you're looking for doesn't exist or has been moved."
+        },
+        "500": {
+            "title": "Server Error",
+            "message": "Something went wrong on our end. Please try again later."
+        },
+        "backHome": "Back to Home"
+    }
 }

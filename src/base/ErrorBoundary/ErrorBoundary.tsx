@@ -27,18 +27,18 @@ export class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error("ErrorBoundary caught an error", error, info);
-    if (error.message.match(/Unauthorized/i)) {
-      window.location.href = "/"; // redirect home
+    if (/Unauthorized/i.exec(error.message)) {
+      window.location.href = "/"; 
     }
   }
 
   render() {
     if (this.state.hasError) {
-      if (this.state.error?.message.match(/Unauthorized/i)) {
-        return null; // handled by redirect
+      if (/Unauthorized/i.exec(this.state.error?.message || "")) {
+        return null; 
       }
 
-      if (this.state.error?.message.match(/Not\s*Found/i)) {
+      if (/Not\s*Found/i.exec(this.state.error?.message || "")) {
         return <Error404 />;
       }
 

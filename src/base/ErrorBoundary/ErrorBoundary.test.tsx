@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ErrorBoundary } from "./ErrorBoundary";
 
-// Mock the Error500 component since it's now used as the default fallback
 vi.mock("~/base/Error500", () => ({
   Error500: () => (
     <div data-testid="error-500">
@@ -13,7 +12,6 @@ vi.mock("~/base/Error500", () => ({
   ),
 }));
 
-// Mock the Error404 component
 vi.mock("~/base/Error404", () => ({
   Error404: () => (
     <div data-testid="error-404">
@@ -50,7 +48,7 @@ describe("ErrorBoundary", () => {
         <Boom />
       </ErrorBoundary>
     );
-    // Now the default fallback is Error500 component
+    
     expect(screen.getByTestId("error-500")).toBeInTheDocument();
     expect(screen.getByText("errors.500.title")).toBeInTheDocument();
     expect(screen.getByText("errors.500.message")).toBeInTheDocument();
@@ -75,7 +73,7 @@ describe("ErrorBoundary", () => {
         <Boom />
       </ErrorBoundary>
     );
-    // Now the default fallback is Error500 component
+    
     expect(screen.getByTestId("error-500")).toBeInTheDocument();
     unmount();
     render(

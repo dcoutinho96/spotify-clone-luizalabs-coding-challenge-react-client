@@ -4,10 +4,10 @@ import { Text, Button } from "~/shared";
 import { ROUTES } from "~/config";
 
 interface ErrorComponentProps {
-    icon: LucideIcon;
-    iconColor?: string;
-    titleKey: string;
-    messageKey: string;
+    readonly icon: LucideIcon;
+    readonly iconColor?: string;
+    readonly titleKey: string;
+    readonly messageKey: string;
 }
 
 export function ErrorComponent({
