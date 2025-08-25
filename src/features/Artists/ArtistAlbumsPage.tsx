@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useArtistByIdQuery } from "~/gql";
-
 import {
   BackButton,
   Image,
@@ -10,6 +9,7 @@ import {
   useInfiniteScroll,
 } from "~/shared";
 import { useInfiniteArtistAlbums } from "./useInfiniteArtistAlbums";
+import { format, parseISO } from "date-fns";
 
 export const ArtistAlbumsPage = () => {
   const { t } = useTranslation();
@@ -73,6 +73,9 @@ export const ArtistAlbumsPage = () => {
         {albumEdges.map(({ node }) => {
           const { id, name, releaseDate, images } = node;
           const [{ url } = { url: "/assets/placeholder-album.png" }] = images;
+          const formattedDate = releaseDate
+            ? format(parseISO(releaseDate), "dd/MM/yyyy")
+            : "";
 
           return (
             <div key={id} className="flex gap-4 items-center">
@@ -83,7 +86,7 @@ export const ArtistAlbumsPage = () => {
               />
               <div>
                 <Text className="text-sm">{name}</Text>
-                <Text className="text-secondary text-xs">{releaseDate}</Text>
+                <Text className="text-secondary text-xs">{formattedDate}</Text>
               </div>
             </div>
           );

@@ -163,12 +163,19 @@ describe("ArtistAlbumsPage", () => {
     expect(screen.getByTestId("back-btn")).toHaveTextContent("Radiohead");
     const artistImg = screen.getByRole("img", { name: "Radiohead" });
     expect(artistImg).toHaveAttribute("src", "https://example.com/artist.jpg");
+
     expect(screen.getByText("In Rainbows")).toBeInTheDocument();
-    expect(screen.getByText("2007-10-10")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "In Rainbows" })).toHaveAttribute("src", "https://example.com/in-rainbows.jpg");
+    expect(screen.getByText("10/10/2007")).toBeInTheDocument(); 
+    expect(
+      screen.getByRole("img", { name: "In Rainbows" })
+    ).toHaveAttribute("src", "https://example.com/in-rainbows.jpg");
+
     expect(screen.getByText("OK Computer")).toBeInTheDocument();
-    expect(screen.getByText("1997-05-21")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "OK Computer" })).toHaveAttribute("src", "/assets/placeholder-album.png");
+    expect(screen.getByText("21/05/1997")).toBeInTheDocument(); 
+    expect(
+      screen.getByRole("img", { name: "OK Computer" })
+    ).toHaveAttribute("src", "/assets/placeholder-album.png");
+
     expect(sentinelAttached).toBe(true);
   });
 
