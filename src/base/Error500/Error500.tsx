@@ -8,6 +8,7 @@ export function Error500() {
       iconColor="text-red-500"
       titleKey="errors.500.title"
       messageKey="errors.500.message"
+      data-testid='error-500'
     />
   );
 }

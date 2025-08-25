@@ -9,7 +9,12 @@ type NavItemProps = Readonly<{
   current?: boolean;
 }>;
 
-export function NavItem({ to, icon: Icon, label, current }: NavItemProps) {
+export function NavItem({
+  to,
+  icon: Icon,
+  label,
+  current,
+}: NavItemProps) {
   const baseClasses = "flex items-center md:gap-4 rounded-md transition-colors";
 
   const activeClasses = "text-primary font-bold";
@@ -25,6 +30,7 @@ export function NavItem({ to, icon: Icon, label, current }: NavItemProps) {
       aria-label={label}
       aria-current={current ? "page" : undefined}
       data-current={current ? "true" : undefined}
+      data-testid={`nav-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
       className={`${baseClasses} group`}
     >
       <Icon

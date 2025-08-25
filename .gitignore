@@ -30,4 +30,5 @@ cert
 .secrets
 test-results
 
-.scannerwork 
+.scannerwork  
+playwright-report

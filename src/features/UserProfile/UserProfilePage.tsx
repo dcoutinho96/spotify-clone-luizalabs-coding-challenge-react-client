@@ -25,17 +25,22 @@ export const UserProfilePage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div data-testid="user-profile-page" className="flex flex-col items-center gap-6">
       <Image
         className="w-32 aspect-square rounded-full object-cover"
         src={url}
         alt={t("profile.alt-profile-picture")}
+        data-testid="profile-picture"
       />
-      <Text className="text-2xl font-medium tracking-[0.01em]">
+      <Text
+        data-testid="profile-display-name"
+        className="text-2xl font-medium tracking-[0.01em]"
+      >
         {displayName}
       </Text>
       <Button
         variant="primary"
+        data-testid="profile-signout-button"
         onClick={handleSignOut}
       >
         {t("profile.sign-out-button")}

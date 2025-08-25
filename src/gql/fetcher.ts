@@ -9,7 +9,7 @@ export const fetcher =
       const baseUrl = getBaseUrl();
 
       const cacheKey = JSON.stringify({ query, variables });
-      
+
       if (isOffline()) {
         const cached = localStorage.getItem(cacheKey);
         if (cached) return JSON.parse(cached) as TData;
@@ -89,7 +89,7 @@ async function safeParseResponse<TData>(
   if (!res.ok) {
     throw new Error(
       parsed.errors?.[0]?.message ??
-        `GraphQL request failed with status ${res.status}`
+      `GraphQL request failed with status ${res.status}`
     );
   }
 

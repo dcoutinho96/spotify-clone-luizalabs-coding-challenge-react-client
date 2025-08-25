@@ -7,6 +7,7 @@ export function Error404() {
       icon={SearchX}
       titleKey="errors.404.title"
       messageKey="errors.404.message"
+      data-testid='error-404'
     />
   );
 }

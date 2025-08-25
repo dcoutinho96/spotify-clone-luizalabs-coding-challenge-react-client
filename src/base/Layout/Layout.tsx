@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes, useLocation } from "react-router";
 import { ROUTES } from "~/config";
 import { LoadingSpinner, useAuth } from "~/shared";
-import { PrivateRoute, Navbar } from "~/base";
+import { PrivateRoute, Navbar, Error404 } from "~/base";
 
 const HomePage = lazy(() =>
   import("~/features").then((module) => ({ default: module.HomePage }))
@@ -19,6 +19,9 @@ const ArtistsPage = lazy(() =>
 const ArtistAlbumsPage = lazy(() =>
   import("~/features").then((module) => ({ default: module.ArtistAlbumsPage }))
 );
+const PlaylistsPage = lazy(() =>
+  import("~/features").then((module) => ({ default: module.PlaylistsPage }))
+);
 const LoginPage = lazy(() =>
   import("~/base").then((module) => ({ default: module.LoginPage }))
 );
@@ -28,7 +31,7 @@ export function Layout() {
   const location = useLocation();
   const mainRef = useRef<HTMLDivElement>(null);
   const scrollPositions = useRef<Record<string, number>>({});
-  
+
   useEffect(() => {
     const main = mainRef.current;
     if (!main) return;
@@ -42,7 +45,7 @@ export function Layout() {
       main.removeEventListener("scroll", handleScroll);
     };
   }, [location.pathname]);
-  
+
   useEffect(() => {
     const main = mainRef.current;
     if (!main) return;
@@ -70,7 +73,10 @@ export function Layout() {
               <Route path={ROUTES.profile} element={<UserProfilePage />} />
               <Route path={ROUTES.artists} element={<ArtistsPage />} />
               <Route path={ROUTES.artistAlbums} element={<ArtistAlbumsPage />} />
+              <Route path={ROUTES.playlists} element={<PlaylistsPage />} />
             </Route>
+
+            <Route path="*" element={<Error404 />} />
           </Routes>
         </Suspense>
       </main>

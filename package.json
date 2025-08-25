@@ -16,6 +16,7 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix && npm run lint:css",
     "prebuild": "npm run codegen && npm run lint",
     "test:unit": "vitest run --coverage",
+    "pretest:e2e": "npm run build",
     "test:e2e": "playwright test",
     "pretest:e2e:ci": "npm run build",
     "test:e2e:ci": "playwright test",
