@@ -21,6 +21,13 @@
     "title": "Top Artistas",
     "subtitle": "Aqui você encontra seus artistas preferidos"
   },
+  "playlists":{
+    "title": "Minhas Playlists",
+    "subtitle": "Minhas Playlists",
+    "create-playlist": "Criar playlist",
+    "give-name-playlist": "Minhas Playlists",
+    "create": "Criar"
+  },
   "errors": {
     "404": {
       "title": "Página não encontrada",
@@ -31,5 +38,8 @@
       "message": "Algo deu errado no nosso lado. Por favor, tente novamente mais tarde."
     },
     "backHome": "Voltar ao início"
+  },
+  "common" : {
+    "loading": "Carregando..."
   }
 }

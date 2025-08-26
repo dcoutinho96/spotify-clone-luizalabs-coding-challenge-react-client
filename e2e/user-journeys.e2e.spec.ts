@@ -34,6 +34,6 @@ test.describe('Complete User Journeys', () => {
     await expect(page.locator('main')).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
-    await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Log In/i })).toBeVisible();
   });
 });

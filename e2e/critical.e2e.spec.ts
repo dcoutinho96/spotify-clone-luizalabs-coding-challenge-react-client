@@ -15,7 +15,7 @@ test.describe('Critical User Flows', () => {
     const loginButton = page.getByTestId('home-login-button');
     await expect(loginButton).toBeVisible();
     await expect(loginButton).toBeEnabled();
-    await expect(loginButton).toContainText(/Sign In/i);
+    await expect(loginButton).toContainText(/Log In/i);
   });
 
   test('page has proper semantic structure', async ({ page }) => {

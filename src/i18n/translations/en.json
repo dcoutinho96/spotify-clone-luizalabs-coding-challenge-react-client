@@ -1,35 +1,45 @@
 {
-    "accessibility": {
-        "spotify-logo": "Spotify Logo"
+  "accessibility": {
+    "spotify-logo": "Spotify Logo"
+  },
+  "home": {
+    "login-instructions": "Log in with your Spotify account by clicking the button below",
+    "login-button": "Log in"
+  },
+  "profile": {
+    "sign-out-button": "Sign out",
+    "alt-profile-picture": "Profile picture"
+  },
+  "navbar": {
+    "home": "Home",
+    "artists": "Artists",
+    "albums": "Albums",
+    "playlists": "Playlists",
+    "profile": "Profile"
+  },
+  "artist": {
+    "title": "Top Artists",
+    "subtitle": "Here you can find your favorite artists"
+  },
+  "playlists": {
+    "title": "My Playlists",
+    "subtitle": "Your personal collection of playlists",
+    "create-playlist": "Create playlist",
+    "give-name-playlist": "Name your playlist",
+    "create": "Create"
+  },
+  "errors": {
+    "404": {
+      "title": "Page not found",
+      "message": "The page you are looking for does not exist or has been moved."
     },
-    "home": {
-        "login-instructions": "Sign in with your Spotify account by clicking the button below",
-        "login-button": "Sign In"
+    "500": {
+      "title": "Server error",
+      "message": "Something went wrong on our side. Please try again later."
     },
-    "profile": {
-        "sign-out-button": "Sign Out",
-        "alt-profile-picture": "Profile Picture"
-    },
-    "navbar": {
-        "home": "Home",
-        "artists": "Artists",
-        "albums": "Albums",
-        "playlists": "Playlists",
-        "profile": "Profile"
-    },
-    "artist": {
-        "title": "Top Artists",
-        "subtitle": "Here you'll find your favorite artists"
-    },
-    "errors": {
-        "404": {
-            "title": "Page Not Found",
-            "message": "The page you're looking for doesn't exist or has been moved."
-        },
-        "500": {
-            "title": "Server Error",
-            "message": "Something went wrong on our end. Please try again later."
-        },
-        "backHome": "Back to Home"
-    }
+    "backHome": "Back to home"
+  },
+  "common" : {
+    "loading": "Loading..."
+  }
 }

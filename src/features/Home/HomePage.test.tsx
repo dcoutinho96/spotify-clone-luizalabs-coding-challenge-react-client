@@ -75,19 +75,19 @@ describe("HomePage", () => {
   it("renders the login instructions text", () => {
     renderWithI18n();
     
-    expect(screen.getByText(/Sign in with your Spotify account/i)).toBeInTheDocument();
+    expect(screen.getByText(/Log in with your Spotify account by clicking the button below/i)).toBeInTheDocument();
   });
 
   it("renders a login button", () => {
     renderWithI18n();
     
-    const button = screen.getByRole("button", { name: /Sign In/i });
+    const button = screen.getByRole("button", { name: /Log In/i });
     expect(button).toBeInTheDocument();
   });
 
   it("calls loginWithSpotify when the button is clicked", () => {
     renderWithI18n();
-    const button = screen.getByRole("button", { name: /Sign In/i });
+    const button = screen.getByRole("button", { name: /Log In/i });
     fireEvent.click(button);
     expect(loginWithSpotify).toHaveBeenCalledTimes(1);
   });
