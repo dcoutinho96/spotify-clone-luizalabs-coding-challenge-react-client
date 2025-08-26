@@ -3,8 +3,8 @@
     "spotify-logo": "Logotipo do Spotify"
   },
   "home": {
-    "login-instructions": "Entra com sua conta Spotify clicando no botão abaixo",
-    "login-button": "Entrar"
+  "login-instructions": "Faça login com sua conta do Spotify clicando no botão abaixo",
+  "login-button": "Log In"
   },
   "profile": {
     "sign-out-button": "Sair",
@@ -21,7 +21,7 @@
     "title": "Top Artistas",
     "subtitle": "Aqui você encontra seus artistas preferidos"
   },
-  "playlists":{
+  "playlists": {
     "title": "Minhas Playlists",
     "subtitle": "Minhas Playlists",
     "create-playlist": "Criar playlist",
@@ -39,7 +39,8 @@
     },
     "backHome": "Voltar ao início"
   },
-  "common" : {
-    "loading": "Carregando..."
+  "common": {
+    "loading": "Carregando...",
+    "install-pwa": "Instalar PWA"
   }
 }

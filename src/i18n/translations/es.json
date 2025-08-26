@@ -3,29 +3,29 @@
     "spotify-logo": "Logotipo de Spotify"
   },
   "home": {
-    "login-instructions": "Inicia sesión con tu cuenta de Spotify haciendo clic en el botón de abajo",
-    "login-button": "Iniciar sesión"
+  "login-instructions": "Inicia sesión con tu cuenta de Spotify haciendo clic en el botón de abajo",
+  "login-button": "Iniciar sesión"
   },
   "profile": {
     "sign-out-button": "Cerrar sesión",
-    "alt-profile-picture": "Foto de perfil"
+    "alt-profile-picture": "Imagen de perfil"
   },
   "navbar": {
     "home": "Inicio",
     "artists": "Artistas",
     "albums": "Álbumes",
-    "playlists": "Listas de reproducción",
+    "playlists": "Playlists",
     "profile": "Perfil"
   },
   "artist": {
     "title": "Artistas principales",
-    "subtitle": "Aquí encuentras a tus artistas favoritos"
+    "subtitle": "Aquí puedes encontrar a tus artistas favoritos"
   },
   "playlists": {
-    "title": "Mis listas de reproducción",
-    "subtitle": "Tu colección personal de listas de reproducción",
-    "create-playlist": "Crear lista de reproducción",
-    "give-name-playlist": "Ponle un nombre a tu lista",
+    "title": "Mis Playlists",
+    "subtitle": "Mis Playlists",
+    "create-playlist": "Crear playlist",
+    "give-name-playlist": "Mis Playlists",
     "create": "Crear"
   },
   "errors": {
@@ -35,11 +35,12 @@
     },
     "500": {
       "title": "Error del servidor",
-      "message": "Algo salió mal de nuestro lado. Por favor, inténtalo de nuevo más tarde."
+      "message": "Algo salió mal en nuestro lado. Por favor, inténtalo de nuevo más tarde."
     },
     "backHome": "Volver al inicio"
   },
   "common": {
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "install-pwa": "Instalar PWA"
   }
 }

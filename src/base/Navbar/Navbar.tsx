@@ -1,5 +1,5 @@
-import { Image, useIsIos } from "~/shared";
-import { Home, User, Disc, Play } from "lucide-react";
+import { Image, useIsIos, Text } from "~/shared";
+import { Home, User, Disc, Play, Download } from "lucide-react";
 import { ROUTES } from "~/config";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -9,6 +9,10 @@ export function Navbar() {
   const { t } = useTranslation();
   const location = useLocation();
   const isIos = useIsIos();
+
+  const handleInstall = () => {
+    window.dispatchEvent(new Event("pwa:install"));
+  };
 
   return (
     <aside
@@ -20,7 +24,7 @@ export function Navbar() {
         px-4
         sm:px-6
         lg:static lg:min-h-screen lg:w-64 lg:flex-col
-        lg:items-start lg:justify-start lg:gap-10 lg:p-8
+        lg:items-start lg:justify-between lg:gap-10 lg:p-8
         ${isIos ? "pb-6" : ""}
       `}
     >
@@ -61,6 +65,25 @@ export function Navbar() {
           current={location.pathname.startsWith(ROUTES.profile)}
         />
       </nav>
+
+      <div className="hidden lg:flex w-full mt-auto">
+        <button
+          onClick={handleInstall}
+          className="flex items-center md:gap-4 rounded-md transition-colors group w-full text-left justify-center cursor-pointer"
+        >
+          <Download
+            className="w-6 h-6 shrink-0 text-primary"
+            aria-hidden="true"
+            focusable="false"
+          />
+          <Text
+            as="span"
+            className="hidden md:inline font-dmsans font-medium text-lg tracking-[-0.06em] text-primary"
+          >
+            {t("common.install-pwa")}
+          </Text>
+        </button>
+      </div>
     </aside>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
@@ -10,6 +10,19 @@ import "./styles/index.pcss";
 
 import { App } from "~/base";
 
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+  prompt: () => Promise<void>;
+}
+
+declare global {
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent;
+    "pwa:install": Event;
+  }
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,7 +31,6 @@ const queryClient = new QueryClient({
       retry: 0,
       networkMode: "offlineFirst",
       throwOnError: (_error, query) => {
-        
         return !query.state.data;
       },
     },
@@ -41,6 +53,35 @@ const persistOptions: PersistOptionsType = {
   persister,
 };
 
+function PwaInstaller() {
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    const handleInstall = () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.finally(() => setDeferredPrompt(null));
+      }
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("pwa:install", handleInstall);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("pwa:install", handleInstall);
+    };
+  }, [deferredPrompt]);
+
+  return null;
+}
+
 if (
   typeof window !== "undefined" &&
   "serviceWorker" in navigator &&
@@ -49,7 +90,9 @@ if (
   import("virtual:pwa-register").then(
     (mod: typeof import("virtual:pwa-register")) => {
       const { registerSW } = mod;
-      registerSW({ immediate: true });
+      registerSW({
+        immediate: true,
+      });
     }
   );
 }
@@ -57,6 +100,7 @@ if (
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+      <PwaInstaller />
       <App />
     </PersistQueryClientProvider>
   </React.StrictMode>
